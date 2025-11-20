@@ -1,0 +1,75 @@
+/* Auth Pages Specific Styles */
+
+.auth-page {
+    background: linear-gradient(135deg, var(--emerald-50) 0%, var(--white) 50%, var(--emerald-50) 100%);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.auth-box {
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+.auth-icon {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Demo Box Styles */
+.demo-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+    border: 2px dashed var(--emerald-600);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.7s ease-out 0.2s both;
+}
+
+.demo-badge {
+    display: inline-block;
+    background: var(--emerald-600);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.demo-credentials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.demo-credentials strong {
+    color: var(--emerald-700);
+    font-weight: 600;
+}
+
+/* Form Animation */
+.auth-form {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.form-group {
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.form-group:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.form-group:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.auth-form .btn {
+    animation: fadeInUp 0.8s ease-out 0.7s both;
+}
+
+.auth-footer {
+    animation: fadeInUp 0.8s ease-out 0.8s both;
+}

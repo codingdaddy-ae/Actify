@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | Actify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/events.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-logged-in">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-brand">
+                <div class="brand-icon-small">
+                    <i data-lucide="heart" class="icon-filled"></i>
+                </div>
+                <span class="brand-name">Volu</span>
+            </a>
+
+            <div class="nav-links-main">
+                <a href="dashboard.html" class="nav-link">
+                    <i data-lucide="heart"></i>
+                    Dashboard
+                </a>
+                <a href="events.html" class="nav-link active">
+                    <i data-lucide="map-pin"></i>
+                    Events
+                </a>
+                <a href="rewards.html" class="nav-link">
+                    <i data-lucide="gift"></i>
+                    Rewards
+                </a>
+                <a href="leaderboard.html" class="nav-link">
+                    <i data-lucide="trophy"></i>
+                    Leaderboard
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-coins">
+                    <span class="coin-value">2,850</span>
+                    <span class="coin-label">coins</span>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="nav-mobile">
+            <a href="dashboard.html" class="nav-mobile-item">
+                <i data-lucide="heart"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="events.html" class="nav-mobile-item active">
+                <i data-lucide="map-pin"></i>
+                <span>Events</span>
+            </a>
+            <a href="rewards.html" class="nav-mobile-item">
+                <i data-lucide="gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="leaderboard.html" class="nav-mobile-item">
+                <i data-lucide="trophy"></i>
+                <span>Leaderboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Discover Volunteer Events</h1>
+            <p class="page-subtitle">Find nearby opportunities that match your interests</p>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+            <button class="btn btn-sm btn-primary" id="gridViewBtn">Grid View</button>
+            <button class="btn btn-sm btn-outline" id="mapViewBtn">Map View</button>
+        </div>
+
+        <!-- Filter by Cause -->
+        <div class="filter-bar">
+            <button class="filter-btn active" data-cause="All">All</button>
+            <button class="filter-btn" data-cause="Environment">Environment</button>
+            <button class="filter-btn" data-cause="Education">Education</button>
+            <button class="filter-btn" data-cause="Charity">Charity</button>
+            <button class="filter-btn" data-cause="Health">Health</button>
+        </div>
+
+        <!-- Map View (hidden by default) -->
+        <div id="mapView" class="map-container" style="display: none;">
+            <div id="map" style="height: 500px; border-radius: 12px;"></div>
+        </div>
+
+        <!-- Grid View -->
+        <div id="gridView">
+            <div class="events-count" id="eventsCount">Found 4 events</div>
+            <div id="eventsGrid" class="events-grid">
+                <!-- Event cards will be loaded here dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script src="components.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Sample events data
+        const SAMPLE_EVENTS = [
+            {
+                id: 1,
+                title: "Park Cleanup Drive",
+                organizer: "Green Earth NGO",
+                date: "2025-11-20",
+                time: "09:00 AM",
+                location: "Central Park",
+                coordinates: [40.7829, -73.9654],
+                cause: "Environment",
+                volunteers: 24,
+                spots: 10,
+                coinsReward: 150,
+                description: "Join us for a morning of cleaning and beautifying our local park.",
+                image: "/placeholder.svg"
+            },
+            {
+                id: 2,
+                title: "Community Teaching Workshop",
+                organizer: "Education First",
+                date: "2025-11-22",
+                time: "02:00 PM",
+                location: "Downtown Community Center",
+                coordinates: [40.7505, -73.9972],
+                cause: "Education",
+                volunteers: 8,
+                spots: 5,
+                coinsReward: 200,
+                description: "Teach basic computer skills to seniors in our community.",
+                image: "/placeholder.svg"
+            },
+            {
+                id: 3,
+                title: "Donation Drive - Winter Relief",
+                organizer: "Community Hearts",
+                date: "2025-11-25",
+                time: "10:00 AM",
+                location: "Riverside Plaza",
+                coordinates: [40.7549, -73.984],
+                cause: "Charity",
+                volunteers: 32,
+                spots: 15,
+                coinsReward: 120,
+                description: "Help us collect and organize donations for families in need this winter.",
+                image: "/placeholder.svg"
+            },
+            {
+                id: 4,
+                title: "Tree Plantation Program",
+                organizer: "Green Earth NGO",
+                date: "2025-11-27",
+                time: "08:00 AM",
+                location: "North Forest Reserve",
+                coordinates: [40.8448, -73.8648],
+                cause: "Environment",
+                volunteers: 45,
+                spots: 20,
+                coinsReward: 180,
+                description: "Plant 500+ trees to expand our urban forest and combat climate change.",
+                image: "/placeholder.svg"
+            }
+        ];
+
+        let currentView = 'grid';
+        let selectedCause = 'All';
+        let map = null;
+
+        // Initialize events page
+        function initEventsPage() {
+            renderEvents();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            // View toggle
+            document.getElementById('gridViewBtn').addEventListener('click', () => switchView('grid'));
+            document.getElementById('mapViewBtn').addEventListener('click', () => switchView('map'));
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedCause = this.dataset.cause;
+                    renderEvents();
+                });
+            });
+        }
+
+        function switchView(view) {
+            currentView = view;
+            const gridViewBtn = document.getElementById('gridViewBtn');
+            const mapViewBtn = document.getElementById('mapViewBtn');
+            const gridView = document.getElementById('gridView');
+            const mapView = document.getElementById('mapView');
+
+            if (view === 'grid') {
+                gridViewBtn.classList.replace('btn-outline', 'btn-primary');
+                mapViewBtn.classList.replace('btn-primary', 'btn-outline');
+                gridView.style.display = 'block';
+                mapView.style.display = 'none';
+            } else {
+                gridViewBtn.classList.replace('btn-primary', 'btn-outline');
+                mapViewBtn.classList.replace('btn-outline', 'btn-primary');
+                gridView.style.display = 'none';
+                mapView.style.display = 'block';
+                initMap();
+            }
+        }
+
+        function renderEvents() {
+            const filteredEvents = selectedCause === 'All' 
+                ? SAMPLE_EVENTS 
+                : SAMPLE_EVENTS.filter(e => e.cause === selectedCause);
+
+            document.getElementById('eventsCount').textContent = 
+                `Found ${filteredEvents.length} event${filteredEvents.length !== 1 ? 's' : ''}`;
+
+            const grid = document.getElementById('eventsGrid');
+            grid.innerHTML = filteredEvents.map(event => createEventCard(event)).join('');
+            
+            lucide.createIcons();
+        }
+
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([40.7829, -73.9654], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                SAMPLE_EVENTS.forEach(event => {
+                    L.marker(event.coordinates)
+                        .addTo(map)
+                        .bindPopup(`<b>${event.title}</b><br>${event.location}<br>${event.coinsReward} coins`);
+                });
+            }
+        }
+
+        // Initialize page
+        initEventsPage();
+    </script>
+</body>
+</html>

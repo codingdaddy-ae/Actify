@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Actify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-logged-in">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-brand">
+                <div class="brand-icon-small">
+                    <i data-lucide="heart" class="icon-filled"></i>
+                </div>
+                <span class="brand-name">Volu</span>
+            </a>
+
+            <div class="nav-links-main">
+                <a href="dashboard.html" class="nav-link active">
+                    <i data-lucide="heart"></i>
+                    Dashboard
+                </a>
+                <a href="events.html" class="nav-link">
+                    <i data-lucide="map-pin"></i>
+                    Events
+                </a>
+                <a href="rewards.html" class="nav-link">
+                    <i data-lucide="gift"></i>
+                    Rewards
+                </a>
+                <a href="leaderboard.html" class="nav-link">
+                    <i data-lucide="trophy"></i>
+                    Leaderboard
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-coins">
+                    <span class="coin-value">2,850</span>
+                    <span class="coin-label">coins</span>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="nav-mobile">
+            <a href="dashboard.html" class="nav-mobile-item active">
+                <i data-lucide="heart"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="events.html" class="nav-mobile-item">
+                <i data-lucide="map-pin"></i>
+                <span>Events</span>
+            </a>
+            <a href="rewards.html" class="nav-mobile-item">
+                <i data-lucide="gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="leaderboard.html" class="nav-mobile-item">
+                <i data-lucide="trophy"></i>
+                <span>Leaderboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Welcome Header -->
+        <div class="page-header">
+            <h1 class="page-title">Welcome back, <span id="userName">Alex Thompson</span>!</h1>
+            <p class="page-subtitle">Track your impact and discover new opportunities</p>
+        </div>
+
+        <!-- Main Stats Grid -->
+        <div class="stats-grid">
+            <!-- Volunteer Points Card -->
+            <div class="coin-display-card">
+                <div class="card-header">
+                    <div class="card-icon primary-icon">
+                        <i data-lucide="trophy" class="icon-filled"></i>
+                    </div>
+                    <h3 class="card-title-lg">Volunteer Points</h3>
+                </div>
+                <div class="coin-value-lg" id="userPoints">3,450</div>
+                <p class="card-subtitle">Keep volunteering to earn more</p>
+            </div>
+
+            <!-- Events Completed Card -->
+            <div class="stat-card">
+                <div class="card-header">
+                    <i data-lucide="map-pin" class="header-icon"></i>
+                    <h3 class="card-title">Events Completed</h3>
+                </div>
+                <div class="stat-value" id="eventsCompleted">18</div>
+                <p class="card-subtitle">Keep up the great work!</p>
+            </div>
+
+            <!-- Hours Volunteered Card -->
+            <div class="stat-card">
+                <div class="card-header">
+                    <i data-lucide="trending-up" class="header-icon accent"></i>
+                    <h3 class="card-title">Hours Volunteered</h3>
+                </div>
+                <div class="stat-value" id="hoursVolunteered">72</div>
+                <p class="card-subtitle">2 weeks this month</p>
+            </div>
+        </div>
+
+        <!-- Badges Section -->
+        <div class="section-block">
+            <div class="section-header">
+                <i data-lucide="award" class="section-icon"></i>
+                <h2 class="section-title-sm">Your Badges</h2>
+            </div>
+            <div id="badgesContainer" class="badges-grid">
+                <!-- Badges will be loaded here -->
+                <div class="badge-item">
+                    <div class="badge-icon">🏆</div>
+                    <p class="badge-name">First Steps</p>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">🦸</div>
+                    <p class="badge-name">Community Hero</p>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-icon">🌱</div>
+                    <p class="badge-name">Green Guardian</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions-grid">
+            <a href="events.html">
+                <button class="btn btn-primary btn-lg btn-full">Browse New Events</button>
+            </a>
+            <a href="rewards.html">
+                <button class="btn btn-outline btn-lg btn-full">View Rewards</button>
+            </a>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="section-block">
+            <h2 class="section-title-sm">Upcoming Events</h2>
+            <div id="upcomingEvents" class="events-list">
+                <!-- Events will be loaded here -->
+                <div class="event-list-item">
+                    <div class="event-info">
+                        <h4 class="event-name">Park Cleanup Drive</h4>
+                        <p class="event-details">
+                            <i data-lucide="calendar" class="icon-sm"></i>
+                            Nov 20, 2025 • 09:00 AM
+                        </p>
+                        <p class="event-details">
+                            <i data-lucide="map-pin" class="icon-sm"></i>
+                            Central Park
+                        </p>
+                    </div>
+                    <div class="event-reward">
+                        <i data-lucide="zap" class="icon-sm"></i>
+                        <span>150 coins</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Load user data
+        loadDashboardData();
+    </script>
+</body>
+</html>

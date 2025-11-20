@@ -1,0 +1,54 @@
+/* Leaderboard Specific Styles */
+
+.leaderboard-header {
+    background: linear-gradient(135deg, var(--slate-50), var(--emerald-50));
+}
+
+.leaderboard-row {
+    animation: fadeInUp 0.5s ease-out both;
+}
+
+.leaderboard-row:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.leaderboard-row:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.leaderboard-row:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.leaderboard-row:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.leaderboard-row:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.rank-badge.rank-top {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+.leaderboard-row.current-user {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%);
+    border-left-width: 4px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.you-badge {
+    animation: fadeInUp 0.5s ease-out 0.5s both;
+}
+
+.user-avatar-sm {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.leaderboard-row:hover .user-avatar-sm {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}

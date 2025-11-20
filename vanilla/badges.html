@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badges | Actify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/badges.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-logged-in">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-brand">
+                <div class="brand-icon-small">
+                    <i data-lucide="heart" class="icon-filled"></i>
+                </div>
+                <span class="brand-name">Volu</span>
+            </a>
+
+            <div class="nav-links-main">
+                <a href="dashboard.html" class="nav-link">
+                    <i data-lucide="heart"></i>
+                    Dashboard
+                </a>
+                <a href="events.html" class="nav-link">
+                    <i data-lucide="map-pin"></i>
+                    Events
+                </a>
+                <a href="rewards.html" class="nav-link">
+                    <i data-lucide="gift"></i>
+                    Rewards
+                </a>
+                <a href="leaderboard.html" class="nav-link">
+                    <i data-lucide="trophy"></i>
+                    Leaderboard
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-coins">
+                    <span class="coin-value">2,850</span>
+                    <span class="coin-label">coins</span>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="nav-mobile">
+            <a href="dashboard.html" class="nav-mobile-item">
+                <i data-lucide="heart"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="events.html" class="nav-mobile-item">
+                <i data-lucide="map-pin"></i>
+                <span>Events</span>
+            </a>
+            <a href="rewards.html" class="nav-mobile-item">
+                <i data-lucide="gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="leaderboard.html" class="nav-mobile-item">
+                <i data-lucide="trophy"></i>
+                <span>Leaderboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="trophy" style="display: inline-block; vertical-align: middle; color: var(--primary);"></i>
+                Badge System
+            </h1>
+            <p class="page-subtitle">Earn badges by reaching milestones and completing challenges</p>
+        </div>
+
+        <!-- Event Milestones -->
+        <div class="badge-category">
+            <h2 class="category-title">Event Milestones</h2>
+            <p class="category-description">Unlock badges by completing events</p>
+            <div class="badges-showcase">
+                <div class="badge-card earned">
+                    <div class="badge-icon-large">🌱</div>
+                    <h3 class="badge-title">First Steps</h3>
+                    <p class="badge-description">Complete 1 event</p>
+                    <div class="badge-status earned">
+                        <i data-lucide="check-circle-2"></i>
+                        <span>Earned</span>
+                    </div>
+                </div>
+
+                <div class="badge-card earned">
+                    <div class="badge-icon-large">🤝</div>
+                    <h3 class="badge-title">Community Helper</h3>
+                    <p class="badge-description">Complete 5 events</p>
+                    <div class="badge-status earned">
+                        <i data-lucide="check-circle-2"></i>
+                        <span>Earned</span>
+                    </div>
+                </div>
+
+                <div class="badge-card earned">
+                    <div class="badge-icon-large">🦸</div>
+                    <h3 class="badge-title">Community Hero</h3>
+                    <p class="badge-description">Complete 10 events</p>
+                    <div class="badge-status earned">
+                        <i data-lucide="check-circle-2"></i>
+                        <span>Earned</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">🏆</div>
+                    <h3 class="badge-title">Champion</h3>
+                    <p class="badge-description">Complete 25 events</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">👑</div>
+                    <h3 class="badge-title">Legend</h3>
+                    <p class="badge-description">Complete 50 events</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cause Specialists -->
+        <div class="badge-category">
+            <h2 class="category-title">Cause Specialists</h2>
+            <p class="category-description">Focus on specific causes to earn badges</p>
+            <div class="badges-showcase">
+                <div class="badge-card earned">
+                    <div class="badge-icon-large">🌿</div>
+                    <h3 class="badge-title">Green Guardian</h3>
+                    <p class="badge-description">5 Environment events</p>
+                    <div class="badge-status earned">
+                        <i data-lucide="check-circle-2"></i>
+                        <span>Earned</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">📚</div>
+                    <h3 class="badge-title">Education Champion</h3>
+                    <p class="badge-description">5 Education events</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">⚕️</div>
+                    <h3 class="badge-title">Health Hero</h3>
+                    <p class="badge-description">5 Health events</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">🏘️</div>
+                    <h3 class="badge-title">Community Builder</h3>
+                    <p class="badge-description">5 Community events</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact Tiers -->
+        <div class="badge-category">
+            <h2 class="category-title">Impact Tiers</h2>
+            <p class="category-description">Reach milestones with Impact Coins</p>
+            <div class="badges-showcase">
+                <div class="badge-card earned">
+                    <div class="badge-icon-large">🥉</div>
+                    <h3 class="badge-title">Bronze Contributor</h3>
+                    <p class="badge-description">1,000 coins earned</p>
+                    <div class="badge-status earned">
+                        <i data-lucide="check-circle-2"></i>
+                        <span>Earned</span>
+                    </div>
+                </div>
+
+                <div class="badge-card earned">
+                    <div class="badge-icon-large">🥈</div>
+                    <h3 class="badge-title">Silver Contributor</h3>
+                    <p class="badge-description">2,500 coins earned</p>
+                    <div class="badge-status earned">
+                        <i data-lucide="check-circle-2"></i>
+                        <span>Earned</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">🥇</div>
+                    <h3 class="badge-title">Gold Contributor</h3>
+                    <p class="badge-description">5,000 coins earned</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+
+                <div class="badge-card locked">
+                    <div class="badge-icon-large">💎</div>
+                    <h3 class="badge-title">Platinum Impact</h3>
+                    <p class="badge-description">10,000 coins earned</p>
+                    <div class="badge-status locked">
+                        <i data-lucide="lock"></i>
+                        <span>Locked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h2 class="section-title-sm">How Badge System Works</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>What are badges?</h3>
+                    <p>Badges are digital achievements that recognize your volunteering dedication and impact across different areas and milestones.</p>
+                </div>
+                <div class="info-item">
+                    <h3>How do I earn them?</h3>
+                    <p>Complete events, reach milestones with Impact Coins, volunteer consistently, and focus on specific causes to unlock new badges.</p>
+                </div>
+                <div class="info-item">
+                    <h3>Display your badges</h3>
+                    <p>Your earned badges appear on your public profile and leaderboard, showcasing your commitment to the community.</p>
+                </div>
+                <div class="info-item">
+                    <h3>What's next?</h3>
+                    <p>More badges are added regularly. Check back often to see new challenges and ways to earn recognition.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

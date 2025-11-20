@@ -1,0 +1,32 @@
+/* Rewards Page Specific Styles */
+
+.event-card {
+    cursor: pointer;
+}
+
+.event-card .event-image {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.event-card:hover .event-image {
+    transform: scale(1.05);
+}
+
+.event-card .btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.event-card:hover .btn {
+    transform: translateX(4px);
+}
+
+/* Reward Icons Pulse */
+.event-image div {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.event-card:hover .event-image div {
+    animation: none;
+    transform: scale(1.2) rotate(10deg);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

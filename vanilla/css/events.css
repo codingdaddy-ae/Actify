@@ -1,0 +1,53 @@
+/* Events Page Specific Styles */
+
+.view-toggle .btn {
+    position: relative;
+}
+
+.events-grid .event-card {
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.events-grid .event-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.events-grid .event-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.events-grid .event-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.events-grid .event-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.events-grid .event-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.events-grid .event-card:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.event-cause {
+    transition: all 0.3s ease;
+}
+
+.event-card:hover .event-cause {
+    background: var(--emerald-600);
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Map Container */
+.map-container {
+    animation: fadeInUp 0.8s ease-out;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+#map {
+    transition: all 0.3s ease;
+}

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Actify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <div class="logo">
+                    <div class="logo-icon">V</div>
+                    <span class="logo-text">Volu</span>
+                </div>
+            </div>
+            <div class="navbar-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="events.html" class="nav-link">Events</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="rewards.html" class="nav-link">Rewards</a>
+                <a href="badges.html" class="nav-link">Badges</a>
+                <div class="coin-display">
+                    <i data-lucide="coins" class="coin-icon"></i>
+                    <span class="coin-value" id="coinValue">0</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 2rem;">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    <i data-lucide="user" class="avatar-icon"></i>
+                </div>
+                <button class="change-avatar-btn">
+                    <i data-lucide="camera"></i>
+                    Change Photo
+                </button>
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name" id="profileName">John Doe</h1>
+                <p class="profile-email" id="profileEmail">john.doe@volu.app</p>
+                <div class="profile-stats-quick">
+                    <div class="stat-quick">
+                        <i data-lucide="calendar-check"></i>
+                        <span id="eventsCompleted">0</span> Events
+                    </div>
+                    <div class="stat-quick">
+                        <i data-lucide="clock"></i>
+                        <span id="hoursVolunteered">0</span> Hours
+                    </div>
+                    <div class="stat-quick">
+                        <i data-lucide="award"></i>
+                        <span id="badgesEarned">0</span> Badges
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-main">
+                <div class="profile-section">
+                    <h2 class="section-title">Volunteer Stats</h2>
+                    <div class="stats-detailed">
+                        <div class="stat-card">
+                            <i data-lucide="trophy" class="stat-icon gold"></i>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Points</div>
+                                <div class="stat-value" id="totalPoints">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i data-lucide="target" class="stat-icon blue"></i>
+                            <div class="stat-info">
+                                <div class="stat-label">Events Attended</div>
+                                <div class="stat-value" id="eventsAttended">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i data-lucide="clock" class="stat-icon emerald"></i>
+                            <div class="stat-info">
+                                <div class="stat-label">Hours Contributed</div>
+                                <div class="stat-value" id="hoursContributed">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i data-lucide="users" class="stat-icon purple"></i>
+                            <div class="stat-info">
+                                <div class="stat-label">Impact Made</div>
+                                <div class="stat-value" id="impactMade">High</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h2 class="section-title">Achievement Progress</h2>
+                    <div class="progress-list">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Event Participant</span>
+                                <span class="progress-count" id="eventProgress">0/10 events</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="eventProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Time Contributor</span>
+                                <span class="progress-count" id="timeProgress">0/50 hours</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill purple" id="timeProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-name">Badge Collector</span>
+                                <span class="progress-count" id="badgeProgress">0/15 badges</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill gold" id="badgeProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h2 class="section-title">Causes Supported</h2>
+                    <div class="causes-grid" id="causesGrid">
+                        <div class="cause-tag">
+                            <i data-lucide="heart"></i>
+                            Community Service
+                        </div>
+                        <div class="cause-tag">
+                            <i data-lucide="tree-pine"></i>
+                            Environment
+                        </div>
+                        <div class="cause-tag">
+                            <i data-lucide="book"></i>
+                            Education
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-sidebar">
+                <div class="profile-section">
+                    <h2 class="section-title">Recent Badges</h2>
+                    <div class="recent-badges" id="recentBadges">
+                        <div class="badge-mini">
+                            <div class="badge-icon">🌱</div>
+                            <div class="badge-details">
+                                <div class="badge-name">First Steps</div>
+                                <div class="badge-date">2 days ago</div>
+                            </div>
+                        </div>
+                        <div class="badge-mini">
+                            <div class="badge-icon">🌿</div>
+                            <div class="badge-details">
+                                <div class="badge-name">Green Guardian</div>
+                                <div class="badge-date">1 week ago</div>
+                            </div>
+                        </div>
+                        <div class="badge-mini locked">
+                            <div class="badge-icon">🦸</div>
+                            <div class="badge-details">
+                                <div class="badge-name">Community Hero</div>
+                                <div class="badge-date">Locked</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="badges.html" class="view-all-link">
+                        View All Badges
+                        <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="profile-section">
+                    <h2 class="section-title">Account Settings</h2>
+                    <div class="settings-links">
+                        <a href="#" class="setting-link">
+                            <i data-lucide="user"></i>
+                            Edit Profile
+                        </a>
+                        <a href="#" class="setting-link">
+                            <i data-lucide="bell"></i>
+                            Notifications
+                        </a>
+                        <a href="#" class="setting-link">
+                            <i data-lucide="shield"></i>
+                            Privacy
+                        </a>
+                        <a href="#" class="setting-link logout" onclick="logout()">
+                            <i data-lucide="log-out"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Load profile data
+        async function loadProfileData() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Update profile info
+            document.getElementById('profileName').textContent = user.name || 'John Doe';
+            document.getElementById('profileEmail').textContent = user.email || 'john.doe@actify.app';
+
+            // Mock data for demo
+            const stats = {
+                points: 2450,
+                eventsCompleted: 8,
+                hoursVolunteered: 42,
+                badgesEarned: 5,
+                eventProgress: 8,
+                timeProgress: 42,
+                badgeProgress: 5
+            };
+
+            // Update coin display
+            document.getElementById('coinValue').textContent = stats.points;
+
+            // Update quick stats
+            document.getElementById('eventsCompleted').textContent = stats.eventsCompleted;
+            document.getElementById('hoursVolunteered').textContent = stats.hoursVolunteered;
+            document.getElementById('badgesEarned').textContent = stats.badgesEarned;
+
+            // Update detailed stats
+            document.getElementById('totalPoints').textContent = stats.points;
+            document.getElementById('eventsAttended').textContent = stats.eventsCompleted;
+            document.getElementById('hoursContributed').textContent = stats.hoursVolunteered;
+
+            // Update progress bars
+            const eventPercent = (stats.eventProgress / 10) * 100;
+            const timePercent = (stats.timeProgress / 50) * 100;
+            const badgePercent = (stats.badgeProgress / 15) * 100;
+
+            document.getElementById('eventProgress').textContent = `${stats.eventProgress}/10 events`;
+            document.getElementById('eventProgressBar').style.width = `${eventPercent}%`;
+
+            document.getElementById('timeProgress').textContent = `${stats.timeProgress}/50 hours`;
+            document.getElementById('timeProgressBar').style.width = `${timePercent}%`;
+
+            document.getElementById('badgeProgress').textContent = `${stats.badgeProgress}/15 badges`;
+            document.getElementById('badgeProgressBar').style.width = `${badgePercent}%`;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Check authentication
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'login.html';
+        } else {
+            loadProfileData();
+        }
+    </script>
+</body>
+</html>

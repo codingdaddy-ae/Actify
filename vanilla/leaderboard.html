@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | Actify</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-logged-in">
+        <div class="nav-container">
+            <a href="dashboard.html" class="nav-brand">
+                <div class="brand-icon-small">
+                    <i data-lucide="heart" class="icon-filled"></i>
+                </div>
+                <span class="brand-name">Volu</span>
+            </a>
+
+            <div class="nav-links-main">
+                <a href="dashboard.html" class="nav-link">
+                    <i data-lucide="heart"></i>
+                    Dashboard
+                </a>
+                <a href="events.html" class="nav-link">
+                    <i data-lucide="map-pin"></i>
+                    Events
+                </a>
+                <a href="rewards.html" class="nav-link">
+                    <i data-lucide="gift"></i>
+                    Rewards
+                </a>
+                <a href="leaderboard.html" class="nav-link active">
+                    <i data-lucide="trophy"></i>
+                    Leaderboard
+                </a>
+            </div>
+
+            <div class="nav-user">
+                <div class="user-coins">
+                    <span class="coin-value">2,850</span>
+                    <span class="coin-label">coins</span>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="nav-mobile">
+            <a href="dashboard.html" class="nav-mobile-item">
+                <i data-lucide="heart"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="events.html" class="nav-mobile-item">
+                <i data-lucide="map-pin"></i>
+                <span>Events</span>
+            </a>
+            <a href="rewards.html" class="nav-mobile-item">
+                <i data-lucide="gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="leaderboard.html" class="nav-mobile-item active">
+                <i data-lucide="trophy"></i>
+                <span>Leaderboard</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Volunteer Leaderboard</h1>
+            <p class="page-subtitle">See how you rank among other volunteers</p>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-container">
+            <div id="leaderboardTable" class="leaderboard-table">
+                <!-- Table will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Sample leaderboard data
+        const SAMPLE_LEADERBOARD = [
+            { rank: 1, name: "Sarah Chen", points: 8450, events: 42 },
+            { rank: 2, name: "Marcus Johnson", points: 7230, events: 38 },
+            { rank: 3, name: "Emma Davis", points: 6890, events: 35 },
+            { rank: 4, name: "Alex Thompson", points: 3450, events: 18, isCurrentUser: true },
+            { rank: 5, name: "Jordan Lee", points: 2980, events: 15 },
+            { rank: 6, name: "Taylor Swift", points: 2750, events: 14 },
+            { rank: 7, name: "Chris Brown", points: 2450, events: 12 },
+            { rank: 8, name: "Kim Park", points: 2100, events: 11 },
+            { rank: 9, name: "Sam Wilson", points: 1890, events: 9 },
+            { rank: 10, name: "Riley Cooper", points: 1650, events: 8 }
+        ];
+
+        function renderLeaderboard() {
+            const table = document.getElementById('leaderboardTable');
+            table.innerHTML = `
+                <div class="leaderboard-header">
+                    <div class="lb-col-rank">Rank</div>
+                    <div class="lb-col-name">Volunteer</div>
+                    <div class="lb-col-points">Points</div>
+                    <div class="lb-col-events">Events</div>
+                </div>
+                ${SAMPLE_LEADERBOARD.map(user => `
+                    <div class="leaderboard-row ${user.isCurrentUser ? 'current-user' : ''}">
+                        <div class="lb-col-rank">
+                            <span class="rank-badge ${user.rank <= 3 ? 'rank-top' : ''}">#${user.rank}</span>
+                        </div>
+                        <div class="lb-col-name">
+                            <div class="user-info">
+                                <div class="user-avatar-sm">${user.name.charAt(0)}</div>
+                                <span>${user.name}</span>
+                                ${user.isCurrentUser ? '<span class="you-badge">You</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="lb-col-points">
+                            <span class="points-value">${user.points.toLocaleString()}</span>
+                        </div>
+                        <div class="lb-col-events">${user.events}</div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        renderLeaderboard();
+    </script>
+</body>
+</html>
