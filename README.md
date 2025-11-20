@@ -9,7 +9,7 @@ actify/
 ├── backend/                 # Spring Boot Java backend
 │   ├── src/main/java/      # Java source code
 │   └── database/           # PostgreSQL init scripts
-├── vanilla/                # Production frontend (HTML/CSS/JS)
+├── frontend/               # Production frontend (HTML/CSS/JS)
 │   ├── *.html             # All page templates
 │   ├── css/               # Modular stylesheets
 │   ├── app.js             # Core JavaScript
@@ -48,9 +48,9 @@ mvn spring-boot:run
 ```
 
 2. **Open the frontend:**
-Simply open `vanilla/index.html` in your browser, or use a local server:
+Simply open `frontend/index.html` in your browser, or use a local server:
 ```bash
-cd vanilla
+cd frontend
 python -m http.server 8000
 # or
 npx serve
@@ -108,7 +108,7 @@ spring.datasource.password=your_password
 ```
 
 ### Frontend Configuration
-Edit `vanilla/app.js`:
+Edit `frontend/app.js`:
 ```javascript
 const API_BASE_URL = 'http://localhost:8080/api';
 ```
