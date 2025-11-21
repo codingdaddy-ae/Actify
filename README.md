@@ -109,26 +109,6 @@ Actify/
 </p>
 
 
-> 💡 **Enhanced UI** with modern React components and styling!
-
-## 🔌 API Endpoints
-
-<p align="center">
-  <img src="https://img.shields.io/badge/REST-API-green?style=flat-square" alt="REST API"/>
-  <img src="https://img.shields.io/badge/Base%20URL-localhost%3A8081%2Fapi-blue?style=flat-square" alt="Base URL"/>
-</p>
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| 🔐 `POST` | `/auth/login` | User authentication | ❌ No |
-| 📝 `POST` | `/auth/register` | User registration | ❌ No |
-| 🎯 `GET` | `/events` | List all events | ✅ Yes |
-| ➕ `POST` | `/events/{id}/register` | Register for event | ✅ Yes |
-| 👤 `GET` | `/users/profile` | Get user profile | ✅ Yes |
-| 📊 `GET` | `/leaderboard` | Top volunteers | ✅ Yes |
-
----
-
 ## ⚙️ Configuration
 
 ### 🗄️ Database Configuration
@@ -161,27 +141,6 @@ const MAP_CENTER = [40.7128, -74.0060]; // New York City
 const MAP_ZOOM = 12;
 ```
 
-## 🏗️ Database Schema
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Tables-8-blue?style=flat-square" alt="Tables"/>
-  <img src="https://img.shields.io/badge/Relations-Fully%20Normalized-green?style=flat-square" alt="Relations"/>
-</p>
-
-| Table | Purpose | Key Fields |
-|-------|---------|------------|
-| 👥 **users** | Volunteer profiles & stats | `firstName`, `lastName`, `volunteerPoints`, `eventsCompleted` |
-| 🏢 **organizations** | Non-profit organizations | `name`, `description`, `contactInfo` |
-| 🎯 **events** | Volunteer opportunities | `title`, `description`, `location`, `rewardPoints` |
-| ✅ **event_registrations** | User event signups | `userId`, `eventId`, `registrationDate`, `status` |
-| 🏆 **badges** | Achievement badges | `name`, `description`, `criteria`, `icon` |
-| 🎁 **rewards** | Redeemable rewards | `name`, `pointsCost`, `description`, `availability` |
-| 💰 **reward_redemptions** | Redemption history | `userId`, `rewardId`, `redemptionDate`, `status` |
-| 🔔 **notifications** | User notifications | `userId`, `message`, `type`, `readStatus` |
-
-> 📊 Run `database/queries.sql` for useful analytics and reporting queries!
-
----
 
 ## 🤝 Contributing
 
