@@ -5,11 +5,11 @@
 <h1 align="center">🌟 Actify</h1>
 
 <p align="center">
-  <img src="https://img.icons8.com/color/96/000000/heart-with-pulse.png" width="80"/>
+  <img src="https://img.icons8.com/color/96/000000/leaf.png" width="80"/>
 </p>
 
 <p align="center">
-  <b>🚀 Empowering communities through volunteer engagement with gamified experiences, real-time tracking, and meaningful rewards</b>
+  <b>🌱 Empowering communities through volunteer engagement with gamified experiences and meaningful rewards</b>
 </p>
 
 ---
@@ -34,29 +34,18 @@
 ```text
 Actify/
 ├── 🖥️  backend/                    # Spring Boot Java backend
-│   ├── src/main/java/com/actify/   # Core application logic
-│   │   ├── controller/             # REST API endpoints
-│   │   ├── model/                  # JPA entities (User, Event, etc.)
-│   │   ├── repository/             # Database repositories
-│   │   ├── security/               # JWT authentication & security
-│   │   └── config/                 # Configuration classes
-│   └── pom.xml                     # Maven dependencies
-├── 🗄️  database/                   # PostgreSQL database scripts
+│   ├── src/main/java/              # Application source code
+│   └── pom.xml                     # Maven configuration
+├── 🗄️  database/                   # Database setup scripts
 │   ├── init.sql                    # Complete database setup
-│   ├── 01_create_database.sql      # Database creation
-│   ├── 02_create_tables.sql        # Table definitions
-│   ├── 03_seed_data.sql            # Sample data insertion
-│   └── queries.sql                 # Analytics queries
-├── 🌐 frontend/                    # Modern HTML/CSS/JS frontend
-│   ├── *.html                      # Page templates
-│   ├── css/                        # Modular stylesheets
-│   ├── app.js                      # Core JavaScript logic
-│   └── components.js               # Reusable UI components
-├── ⚛️  nextjs-version/             # Next.js/React alternative
-│   ├── app/                        # Next.js 15 app directory
-│   ├── components/                 # React components
-│   └── lib/                        # Utilities
-└── 🎨 styles/                      # Global style assets
+│   └── *.sql                       # Table creation & sample data
+├── 🌐 frontend/                    # Modern web interface
+│   ├── *.html                      # Application pages
+│   ├── css/                        # Stylesheets
+│   └── *.js                        # JavaScript logic
+└── 📱 nextjs-version/              # Modern React interface
+    ├── app/                        # Application pages
+    └── components/                 # UI components
 ```
 
 ## 📦 Tech Stack
@@ -69,15 +58,13 @@ Actify/
 
 | Layer | Technology | Purpose |
 |-------|------------|----------|
-| 🖼️ **Frontend** | HTML5, CSS3, JavaScript | Modern, responsive UI with no build process |
-| 🔧 **Icons** | Lucide Icons | Beautiful, consistent iconography |
-| 🗺️ **Maps** | Leaflet.js | Interactive event location mapping |
-| ⚛️ **Alternative** | Next.js 16 + React 19 + TypeScript | Modern development experience |
-| 🎨 **Styling** | Tailwind CSS + shadcn/ui | Utility-first styling with components |
-| 🚀 **Backend** | Spring Boot + Java 21 | Robust REST API with modern Java |
-| 🗄️ **Database** | PostgreSQL 17 | Reliable, scalable data storage |
-| 🔐 **Auth** | JWT + Spring Security | Secure authentication & authorization |
-| 📦 **Build** | Maven | Dependency management & packaging |
+| 🌐 **Frontend** | HTML5, CSS3, JavaScript | Clean, responsive web interface |
+| 🎨 **Icons** | Lucide Icons | Beautiful iconography |
+| 🗺️ **Maps** | Leaflet.js | Interactive location mapping |
+| 🚀 **Backend** | Spring Boot + Java | Robust REST API |
+| 🗄️ **Database** | PostgreSQL | Reliable data storage |
+| 🔐 **Security** | JWT Authentication | Secure user sessions |
+| 📦 **Build** | Maven | Project management |
 
 ---
 
@@ -185,21 +172,15 @@ npx serve .
 
 🌟 **Frontend runs at:** `http://localhost:5500`
 
-### ⚛️ Alternative: Next.js Version (Modern Development)
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js"/>
-  <img src="https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react" alt="React"/>
-  <img src="https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript" alt="TypeScript"/>
-</p>
+### 📱 Alternative: React Version
 
 **1. 📦 Install dependencies:**
 ```bash
 cd nextjs-version
-pnpm install --legacy-peer-deps
+pnpm install
 ```
 
-**2. 🚀 Run development server:**
+**2. 🚀 Start development:**
 ```bash
 pnpm dev
 ```
@@ -207,7 +188,7 @@ pnpm dev
 **3. 🌐 Open browser:**
 Navigate to [http://localhost:3000](http://localhost:3000)
 
-> 💡 **Features**: Hot reload, TypeScript, Tailwind CSS, shadcn/ui components!
+> 💡 **Enhanced UI** with modern React components and styling!
 
 ## 🔌 API Endpoints
 
