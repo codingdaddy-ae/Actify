@@ -245,7 +245,7 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     background-size: 200% 100%;
-    animation: shimmer 3s linear infinite;
+    animation: shimmer 8s linear infinite;
 }
 
 /* Stats Section Animation */

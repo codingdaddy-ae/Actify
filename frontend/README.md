@@ -1,4 +1,4 @@
-# VolunteerHub - Vanilla HTML/CSS/JS Version
+# Actify - Vanilla HTML/CSS/JS Version
 
 This is the vanilla HTML, CSS, and JavaScript version of the VolunteerHub application, converted from Next.js/React while maintaining all the same UI and functionality.
 

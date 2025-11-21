@@ -1,9 +1,12 @@
 // API Base URL - Update this to your backend URL
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://localhost:8081/api';
 
 // ===== Authentication Functions =====
 async function loginUser(email, password) {
     try {
+        console.log('Attempting login to:', `${API_BASE_URL}/auth/login`);
+        console.log('Email:', email);
+        
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: {
@@ -12,17 +15,21 @@ async function loginUser(email, password) {
             body: JSON.stringify({ email, password })
         });
 
-        if (response.ok) {
-            const data = await response.json();
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (response.ok && data.success) {
             localStorage.setItem('user', JSON.stringify(data));
             localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
             window.location.href = 'dashboard.html';
         } else {
-            alert('Login failed. Please check your credentials.');
+            alert(data.message || 'Login failed. Please check your credentials.');
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('An error occurred during login.');
+        alert('An error occurred during login. Make sure the backend is running on port 8081.');
     }
 }
 
