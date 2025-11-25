@@ -31,7 +31,7 @@
 .rank-badge.rank-top {
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
     box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
-    animation: shimmer 2s ease-in-out infinite;
+    animation: shimmer 4s ease-in-out infinite;
 }
 
 .leaderboard-row.current-user {

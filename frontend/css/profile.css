@@ -175,3 +175,436 @@
     .profile-section { padding: 1.25rem 1.25rem; }
     .stat-card { flex-direction: row; }
 }
+
+/* Modern Profile Page Styles */
+.profile-page {
+    background: #ffffff;
+    min-height: 100vh;
+    padding-top: 2rem;
+}
+
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.profile-card {
+    background: #ffffff;
+    border: 2px solid transparent;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, #10b981, #059669, #3b82f6) border-box;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.profile-header-new {
+    background: linear-gradient(45deg, #10b981, #059669);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.profile-avatar-new {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.profile-welcome {
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.profile-join-date {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin-top: 0.4rem;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.profile-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.profile-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.profile-action-btn.shared {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.profile-name-new {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.profile-email-new {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.profile-stats-new {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.stat-item-new {
+    text-align: center;
+}
+
+.stat-number-new {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+}
+
+.stat-label-new {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.profile-content-new {
+    padding: 3rem 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card-new {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 2px solid transparent;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.4)) border-box;
+    transition: all 0.3s ease;
+}
+
+.stat-card-new:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(16, 185, 129, 0.15);
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, #10b981, #059669, #3b82f6) border-box;
+}
+
+.stat-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    color: #059669;
+}
+
+.stat-card-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-subtext {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.progress-section {
+    background: #ffffff;
+    border: 2px solid transparent;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2)) border-box;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-section-modern {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    margin-bottom: 2rem;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #0f172a;
+}
+
+.section-heading p {
+    margin: 0.25rem 0 0;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.section-pill {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #065f46;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.badge-card {
+    display: flex;
+    gap: 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.badge-card:hover {
+    border-color: rgba(16, 185, 129, 0.4);
+    transform: translateY(-2px);
+}
+
+.badge-card-locked {
+    opacity: 0.55;
+}
+
+.badge-emoji {
+    font-size: 2rem;
+}
+
+.badge-copy h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+.badge-copy p {
+    margin: 0.35rem 0;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.badge-copy span {
+    font-size: 0.8rem;
+    color: #06b6d4;
+    font-weight: 600;
+}
+
+.achievement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.achievement-card {
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+}
+
+.achievement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+}
+
+.achievement-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.achievement-header p {
+    margin: 0.2rem 0 0;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.achievement-header span {
+    font-weight: 700;
+    color: #059669;
+}
+
+.achievement-target {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.causes-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.cause-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.1);
+    color: #1d4ed8;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.empty-state {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    padding: 1.5rem 0;
+}
+.progress-item-new {
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar-new {
+    background: #f1f5f9;
+    border: 1px solid transparent;
+    background: linear-gradient(#f1f5f9, #f1f5f9) padding-box,
+                linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(59, 130, 246, 0.3)) border-box;
+    border-radius: 12px;
+    height: 10px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-fill-new {
+    height: 100%;
+    background: linear-gradient(135deg, #10b981, #059669, #3b82f6);
+    border-radius: 12px;
+    transition: width 0.8s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Gradient border utilities */
+.gradient-border {
+    border: 2px solid transparent;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, #10b981, #059669, #3b82f6) border-box;
+    border-radius: 12px;
+}
+
+.gradient-border-subtle {
+    border: 1px solid transparent;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+                linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3)) border-box;
+    border-radius: 8px;
+}
+
+/* Fix navbar styling for profile page */
+.navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.navbar .user-coins {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: #f3f4f6;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.navbar .coin-icon {
+    font-size: 1.25rem;
+    margin-left: 0.25rem;
+}
+
+.navbar .user-avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.navbar .user-avatar:hover {
+    transform: scale(1.05);
+}

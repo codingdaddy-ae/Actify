@@ -4,6 +4,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -14,15 +15,19 @@
     0% {
         background-position: -1000px 0;
     }
+
     100% {
         background-position: 1000px 0;
     }
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.8;
     }
@@ -184,9 +189,9 @@ body {
 .progress-bar {
     background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
     background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
+    animation: shimmer 5s linear infinite;
     border-radius: 9999px;
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Filter Button Animation */
@@ -245,7 +250,7 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     background-size: 200% 100%;
-    animation: shimmer 8s linear infinite;
+    animation: shimmer 100s linear infinite;
 }
 
 /* Stats Section Animation */
@@ -261,6 +266,7 @@ body {
 
 /* Responsive smooth transitions */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -268,4 +274,57 @@ body {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+/* Ribbon Burst Animation */
+@keyframes ribbon-burst {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.animate-burst {
+    animation: ribbon-burst 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Heart Beat Animation */
+@keyframes heart-beat {
+    0% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.3);
+    }
+    30% {
+        transform: scale(1);
+    }
+    45% {
+        transform: scale(1.3);
+    }
+    60% {
+        transform: scale(1);
+    }
+}
+
+.animate-heart-beat:hover, .animate-heart-beat:active {
+    animation: heart-beat 1s ease-in-out infinite;
+}
+
+/* Badge Lock Sway */
+@keyframes sway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+.badge-card-locked:hover {
+    animation: sway 0.5s ease-in-out;
 }

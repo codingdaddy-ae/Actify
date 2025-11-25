@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="css/leaderboard.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="nav-logged-in">
@@ -35,6 +37,10 @@
                 <a href="leaderboard.html" class="nav-link active">
                     <i data-lucide="trophy"></i>
                     Leaderboard
+                </a>
+                <a href="badges.html" class="nav-link">
+                    <i data-lucide="award"></i>
+                    Badges
                 </a>
             </div>
 
@@ -66,6 +72,10 @@
             <a href="leaderboard.html" class="nav-mobile-item active">
                 <i data-lucide="trophy"></i>
                 <span>Leaderboard</span>
+            </a>
+            <a href="badges.html" class="nav-link">
+                <i data-lucide="award"></i>
+                Badges
             </a>
         </div>
     </nav>
@@ -106,10 +116,10 @@
         function renderLeaderboard() {
             const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
             const currentUserEmail = currentUser.email;
-            
+
             // Check if current user is in leaderboard
             const userInLeaderboard = SAMPLE_LEADERBOARD.find(u => u.email === currentUserEmail);
-            
+
             const table = document.getElementById('leaderboardTable');
             table.innerHTML = `
                 <div class="leaderboard-header">
@@ -144,7 +154,7 @@
                     </div>
                 ` : ''}
             `;
-            
+
             // Re-initialize icons after DOM update
             lucide.createIcons();
         }
@@ -154,4 +164,5 @@
         updateUserAvatar();
     </script>
 </body>
+
 </html>

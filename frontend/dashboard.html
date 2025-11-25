@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,12 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="nav-logged-in">
         <div class="nav-container">
-            <a href="dashboard.html" class="nav-brand">
+            <a href="index.html" class="nav-brand">
                 <div class="brand-icon-small">
                     <i data-lucide="heart" class="icon-filled"></i>
                 </div>
@@ -21,7 +23,7 @@
 
             <div class="nav-links-main">
                 <a href="dashboard.html" class="nav-link active">
-                    <i data-lucide="heart"></i>
+                    <i data-lucide="heart" class="animate-heart-beat"></i>
                     Dashboard
                 </a>
                 <a href="events.html" class="nav-link">
@@ -35,6 +37,10 @@
                 <a href="leaderboard.html" class="nav-link">
                     <i data-lucide="trophy"></i>
                     Leaderboard
+                </a>
+                <a href="badges.html" class="nav-link">
+                    <i data-lucide="award"></i>
+                    Badges
                 </a>
             </div>
 
@@ -52,7 +58,7 @@
         <!-- Mobile Navigation -->
         <div class="nav-mobile">
             <a href="dashboard.html" class="nav-mobile-item active">
-                <i data-lucide="heart"></i>
+                <i data-lucide="heart" class="animate-heart-beat"></i>
                 <span>Dashboard</span>
             </a>
             <a href="events.html" class="nav-mobile-item">
@@ -66,6 +72,10 @@
             <a href="leaderboard.html" class="nav-mobile-item">
                 <i data-lucide="trophy"></i>
                 <span>Leaderboard</span>
+            </a>
+            <a href="badges.html" class="nav-link">
+                <i data-lucide="award"></i>
+                Badges
             </a>
         </div>
     </nav>
@@ -177,43 +187,26 @@
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Initialize demo data for testing if no user is logged in
-        async function initializeDemo() {
+        // Check if user is authenticated
+        function checkAuthentication() {
             if (!localStorage.getItem('user') || !localStorage.getItem('token')) {
-                // Create demo user data for testing
-                const demoUser = {
-                    id: 1,
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    name: 'John Doe',
-                    email: 'john.doe@example.com',
-                    volunteerPoints: 2850,
-                    eventsCompleted: 12,
-                    volunteerHours: 48,
-                    phone: '+1-555-0123',
-                    country: 'United States',
-                    city: 'New York',
-                    neighborhood: 'Manhattan',
-                    interests: 'Environment, Education, Community Service'
-                };
-                
-                localStorage.setItem('user', JSON.stringify(demoUser));
-                localStorage.setItem('token', 'demo-token-12345');
-                
-                // Show demo notice
-                console.log('Demo mode: Using test user data since no login detected');
+                window.location.href = 'login.html';
+                return false;
             }
+            return true;
         }
 
         // Initialize and load data
         async function init() {
-            await initializeDemo();
-            loadDashboardData();
-            updateUserCoins();
-            updateUserAvatar();
+            if (checkAuthentication()) {
+                loadDashboardData();
+                updateUserCoins();
+                updateUserAvatar();
+            }
         }
 
         init();
     </script>
 </body>
+
 </html>

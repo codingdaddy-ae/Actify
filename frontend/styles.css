@@ -9,7 +9,7 @@
     --emerald-600: #059669;
     --emerald-700: #047857;
     --emerald-800: #065f46;
-    
+
     --slate-50: #f8fafc;
     --slate-100: #f1f5f9;
     --slate-200: #e2e8f0;
@@ -19,28 +19,28 @@
     --slate-700: #334155;
     --slate-800: #1e293b;
     --slate-900: #0f172a;
-    
+
     --white: #ffffff;
     --black: #000000;
-    
+
     --primary: var(--emerald-600);
     --primary-light: var(--emerald-100);
     --primary-dark: var(--emerald-700);
-    
+
     --accent: #fbbf24;
     --accent-light: #fef3c7;
-    
+
     --text-primary: var(--slate-900);
     --text-secondary: var(--slate-600);
     --text-muted: var(--slate-500);
-    
+
     --border-color: var(--emerald-100);
     --border-hover: var(--emerald-300);
-    
+
     --radius: 0.75rem;
     --radius-lg: 1rem;
     --radius-sm: 0.5rem;
-    
+
     --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
@@ -262,7 +262,7 @@ img {
     .nav-links-main {
         display: none;
     }
-    
+
     .nav-mobile {
         display: flex;
     }
@@ -871,9 +871,19 @@ img {
 
 .stat-card {
     background: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    background: linear-gradient(var(--white), var(--white)) padding-box,
+        linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(59, 130, 246, 0.3)) border-box;
+    border-radius: 16px;
     padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    background: linear-gradient(var(--white), var(--white)) padding-box,
+        linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(59, 130, 246, 0.5)) border-box;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.1);
 }
 
 .header-icon {
@@ -1087,14 +1097,19 @@ img {
 /* Event Card */
 .event-card {
     background: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    background: linear-gradient(var(--white), var(--white)) padding-box,
+        linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(59, 130, 246, 0.3)) border-box;
+    border-radius: 16px;
     overflow: hidden;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
 }
 
 .event-card:hover {
-    border-color: rgba(16, 185, 129, 0.5);
+    background: linear-gradient(var(--white), var(--white)) padding-box,
+        linear-gradient(135deg, #10b981, #059669, #3b82f6) border-box;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+    transform: translateY(-2px);
 }
 
 .event-image {
@@ -1283,12 +1298,13 @@ img {
 }
 
 @media (max-width: 640px) {
+
     .leaderboard-header,
     .leaderboard-row {
         grid-template-columns: 60px 1fr 80px;
         font-size: 0.75rem;
     }
-    
+
     .lb-col-events {
         display: none;
     }
@@ -1320,7 +1336,7 @@ img {
     .hero-title {
         font-size: 2.5rem;
     }
-    
+
     .hero-description {
         font-size: 1rem;
     }

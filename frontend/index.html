@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +9,15 @@
     <link rel="stylesheet" href="css/home.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="nav-main">
         <div class="nav-container">
-            <div class="nav-brand">
+            <a href="index.html" class="nav-brand" style="text-decoration: none; color: inherit;">
                 <div class="brand-icon">A</div>
                 <span class="brand-name">Actify</span>
-            </div>
+            </a>
             <div class="nav-links" id="navLinks">
                 <a href="dashboard.html" class="nav-link">Dashboard</a>
                 <a href="events.html" class="nav-link">Events</a>
@@ -28,7 +30,9 @@
                 <div id="userInfo" style="display: none; align-items: center; gap: 0.75rem;">
                     <span id="userGreeting" style="font-size: 0.875rem; color: var(--text-primary);">Hi, User</span>
                     <a href="profile.html" style="text-decoration: none;">
-                        <div class="user-avatar" style="cursor: pointer; width: 2rem; height: 2rem; border-radius: 50%; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">A</div>
+                        <div class="user-avatar"
+                            style="cursor: pointer; width: 2rem; height: 2rem; border-radius: 50%; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            A</div>
                     </a>
                 </div>
             </div>
@@ -43,7 +47,8 @@
                     Volunteer <span class="text-primary">for Good</span>
                 </h1>
                 <p class="hero-description">
-                    Discover meaningful opportunities in your community, make real impact, and earn Volunteer Points to unlock exclusive rewards.
+                    Discover meaningful opportunities in your community, make real impact, and earn Volunteer Points to
+                    unlock exclusive rewards.
                 </p>
             </div>
 
@@ -64,7 +69,8 @@
                     </div>
                     <h3 class="feature-title">Discover Local Events</h3>
                     <p class="feature-description">
-                        Find volunteer opportunities near you with our interactive map. Choose causes that matter to you.
+                        Find volunteer opportunities near you with our interactive map. Choose causes that matter to
+                        you.
                     </p>
                 </div>
 
@@ -84,7 +90,8 @@
                     </div>
                     <h3 class="feature-title">Unlock Rewards</h3>
                     <p class="feature-description">
-                        Redeem your Volunteer Points for amazing rewards including gift cards, coupons, and certificates.
+                        Redeem your Volunteer Points for amazing rewards including gift cards, coupons, and
+                        certificates.
                     </p>
                 </div>
             </div>
@@ -162,7 +169,8 @@
                         <h3 class="testimonial-name">Sarah's Story</h3>
                     </div>
                     <p class="testimonial-text">
-                        "Actify helped me find meaningful volunteer work in my neighborhood. I've earned 2,500 points while helping my community grow stronger!"
+                        "Actify helped me find meaningful volunteer work in my neighborhood. I've earned 2,500 points
+                        while helping my community grow stronger!"
                     </p>
                     <p class="testimonial-author">Sarah Chen • Community Leader</p>
                 </div>
@@ -175,7 +183,8 @@
                         <h3 class="testimonial-name">Marcus' Impact</h3>
                     </div>
                     <p class="testimonial-text">
-                        "The gamification keeps me coming back! I love earning badges and competing on the leaderboard. Plus, I've already redeemed rewards I actually want!"
+                        "The gamification keeps me coming back! I love earning badges and competing on the leaderboard.
+                        Plus, I've already redeemed rewards I actually want!"
                     </p>
                     <p class="testimonial-author">Marcus Johnson • Active Volunteer</p>
                 </div>
@@ -217,13 +226,13 @@
             </div>
         </div>
     </footer>
-
+   
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
-        
+
         // Check if user is logged in and update navbar
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             if (user && user.name) {
                 // Hide Sign In and Get Started links
@@ -232,7 +241,8 @@
                 const userInfo = document.getElementById('userInfo');
                 const userGreeting = document.getElementById('userGreeting');
                 const userAvatar = document.querySelector('#userInfo .user-avatar');
-                
+                const navLinks = document.getElementById('navLinks');
+
                 if (signInLink) signInLink.style.display = 'none';
                 if (getStartedLink) getStartedLink.style.display = 'none';
                 if (userInfo) userInfo.style.display = 'flex';
@@ -242,8 +252,23 @@
                     userGreeting.textContent = `Hi, ${firstName}`;
                 }
                 if (userAvatar) userAvatar.textContent = user.name.charAt(0).toUpperCase();
+
+                // Add Badges link if not present
+                if (navLinks) {
+                    // Check if Badges link already exists to avoid duplicates
+                    const existingBadgesLink = Array.from(navLinks.children).find(link => link.textContent.trim() === 'Badges');
+                    if (!existingBadgesLink) {
+                        const badgesLink = document.createElement('a');
+                        badgesLink.href = 'badges.html';
+                        badgesLink.className = 'nav-link';
+                        badgesLink.textContent = 'Badges';
+                        // Insert before user info or at the end of links
+                        navLinks.insertBefore(badgesLink, userInfo);
+                    }
+                }
             }
         });
     </script>
 </body>
+
 </html>

@@ -56,13 +56,13 @@ function createEventCard(event) {
 async function handleEventRegistration(eventId) {
     const button = document.querySelector(`button[data-event-id="${eventId}"]`);
     if (!button) return;
-    
+
     const originalText = button.textContent;
     button.textContent = 'Registering...';
     button.disabled = true;
-    
+
     const success = await registerForEvent(eventId);
-    
+
     if (success) {
         button.textContent = 'Registered';
         button.classList.remove('btn-outline');
@@ -75,7 +75,7 @@ async function handleEventRegistration(eventId) {
 
 // Create Badge Component
 function createBadge(badgeName) {
-    const badgeEmojis = { 
+    const badgeEmojis = {
         "First Steps": "🏆",
         "Community Hero": "🦸",
         "Green Guardian": "🌱",
@@ -85,7 +85,7 @@ function createBadge(badgeName) {
         "Teacher": "📚",
         "Donor": "❤️"
     };
-    
+
     return `
         <div class="badge-item">
             <div class="badge-icon">${badgeEmojis[badgeName] || '⭐'}</div>
@@ -139,7 +139,7 @@ function createNavigation(currentPage = '') {
     const userName = user?.name || 'User';
     const userCoins = user?.volunteerPoints || 0;
     const userInitial = userName.charAt(0).toUpperCase();
-    
+
     return `
         <nav class="nav-logged-in">
             <div class="nav-container">
@@ -204,7 +204,7 @@ function createNavigation(currentPage = '') {
 // Create Leaderboard Row
 function createLeaderboardRow(user, currentUserId = null) {
     const isCurrentUser = user.id === currentUserId || user.isCurrentUser;
-    
+
     return `
         <div class="leaderboard-row ${isCurrentUser ? 'current-user' : ''}">
             <div class="lb-col-rank">
