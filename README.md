@@ -120,15 +120,6 @@ python -m http.server 5500
 
 ---
 
-## 🤝 Contributing
-
-1. Fork the repo
-2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Commit your changes
-4. Push and open a Pull Request
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

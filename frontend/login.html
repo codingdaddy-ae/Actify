@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="css/auth.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body class="auth-page">
     <div class="auth-container">
         <div class="auth-box">
@@ -31,33 +33,21 @@
             <form id="loginForm" class="auth-form">
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        class="form-input" 
-                        placeholder="you@example.com"
-                        value="demo@actify.app" 
-                        required
-                    />
+                    <input type="email" id="email" class="form-input" placeholder="you@example.com"
+                        value="demo@actify.app" required />
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        class="form-input" 
-                        placeholder="••••••••"
-                        value="demo123" 
-                        required
-                    />
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" value="demo123"
+                        required />
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg btn-full">Sign In</button>
             </form>
 
             <p class="auth-footer">
-                Don't have an account? 
+                Don't have an account?
                 <a href="register.html" class="auth-link">Register here</a>
             </p>
         </div>
@@ -67,14 +57,15 @@
     <script>
         lucide.createIcons();
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            
+
             // Call login API
             loginUser(email, password);
         });
     </script>
 </body>
+
 </html>
