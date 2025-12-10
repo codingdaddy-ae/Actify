@@ -38,21 +38,12 @@
                 </button>
             </div>
 
-            <!-- Demo Credentials -->
-            <div class="demo-box" id="demoBox">
-                <div class="demo-badge">🎯 Demo Account</div>
-                <div class="demo-credentials">
-                    <div><strong>Email:</strong> <span id="demoEmail">demo@actify.app</span></div>
-                    <div><strong>Password:</strong> <span id="demoPassword">demo123</span></div>
-                </div>
-            </div>
-
             <form id="loginForm" class="auth-form">
                 <input type="hidden" id="loginType" value="volunteer">
                 
                 <div class="form-group">
                     <label class="form-label">Email</label>
-                    <input type="email" id="email" class="form-input" placeholder="you@example.com"
+                    <input type="email" id="email" class="form-input" placeholder="john.doe@example.com"
                         required />
                 </div>
 
@@ -126,8 +117,6 @@
             const volunteerToggle = document.getElementById('volunteerToggle');
             const orgToggle = document.getElementById('orgToggle');
             const loginType = document.getElementById('loginType');
-            const demoEmail = document.getElementById('demoEmail');
-            const demoPassword = document.getElementById('demoPassword');
             const emailInput = document.getElementById('email');
             const passwordInput = document.getElementById('password');
 
@@ -139,16 +128,12 @@
                 volunteerToggle.classList.add('active');
                 orgToggle.classList.remove('active');
                 loginType.value = 'volunteer';
-                demoEmail.textContent = 'demo@actify.app';
-                demoPassword.textContent = 'demo123';
                 emailInput.value = '';
                 passwordInput.value = '';
             } else {
                 volunteerToggle.classList.remove('active');
                 orgToggle.classList.add('active');
                 loginType.value = 'organization';
-                demoEmail.textContent = 'org@actify.app';
-                demoPassword.textContent = 'org123';
                 emailInput.value = '';
                 passwordInput.value = '';
             }
