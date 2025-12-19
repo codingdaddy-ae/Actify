@@ -477,20 +477,40 @@
         }
 
         function initMap() {
+            const mapContainer = document.getElementById('eventsMap');
+            
+            // Ensure container has proper dimensions
+            if (mapContainer && (!mapContainer.style.height || mapContainer.offsetHeight === 0)) {
+                mapContainer.style.height = '400px';
+                mapContainer.style.minHeight = '400px';
+            }
+            
             if (!map) {
                 // Default center - will be updated based on events or user location
                 const defaultCenter = [20.5937, 78.9629]; // India center
-                    
-                map = L.map('eventsMap').setView(defaultCenter, 5);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
                 
-                // If user location was already set, add marker
-                if (userLocation) {
-                    addUserMarker();
-                    updateRadiusCircle();
-                    map.setView([userLocation.lat, userLocation.lng], 12);
+                try {
+                    map = L.map('eventsMap').setView(defaultCenter, 5);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    
+                    // Fix map rendering issues
+                    setTimeout(function() {
+                        if (map) {
+                            map.invalidateSize();
+                            console.log('Events map size invalidated');
+                        }
+                    }, 200);
+                    
+                    // If user location was already set, add marker
+                    if (userLocation) {
+                        addUserMarker();
+                        updateRadiusCircle();
+                        map.setView([userLocation.lat, userLocation.lng], 12);
+                    }
+                } catch (error) {
+                    console.error('Error initializing map:', error);
                 }
             }
             
