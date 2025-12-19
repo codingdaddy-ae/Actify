@@ -87,14 +87,10 @@
                         <span id="profileAvatarLetter">U</span>
                     </div>
                     <!-- Main upload button for image -->
-                    <label for="profileImageUpload" class="avatar-upload-btn" title="Upload Photo" style="bottom: 5px; right: 5px;">
+                    <label for="profileImageUpload" class="avatar-upload-btn" title="Upload Photo">
                         <i data-lucide="camera"></i>
                     </label>
                     <input type="file" id="profileImageUpload" accept="image/*" style="display:none;">
-                    <!-- Small emoji button -->
-                    <button type="button" class="avatar-emoji-btn" id="changeEmojiBtn" title="Set Emoji">
-                        <i data-lucide="smile"></i>
-                    </button>
                 </div>
                 <p class="profile-welcome" id="profileWelcome">Welcome back, Volunteer!</p>
                 <!-- <h1 class="profile-name-new" id="profileNameNew">Loading...</h1> -->
@@ -198,20 +194,25 @@
         <script src="app.js"></script>
         <script src="js/image-library.js"></script>
         <script>
-            // Define badges data
+            // SECURITY: Check authentication before allowing access
+            (function() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+            })();
+            
+            // Define badges data - same as badges.html for consistency
             const allBadges = [
-                { id: 'first-step', name: 'First Step', icon: '👣', description: 'Complete your first volunteer event', earned: false },
-                { id: 'helping-hand', name: 'Helping Hand', icon: '🤝', description: 'Complete 5 volunteer events', earned: false },
-                { id: 'community-hero', name: 'Community Hero', icon: '🦸', description: 'Complete 10 volunteer events', earned: false },
-                { id: 'time-giver', name: 'Time Giver', icon: '⏰', description: 'Volunteer for 20+ hours', earned: false },
-                { id: 'dedicated', name: 'Dedicated', icon: '💪', description: 'Volunteer for 50+ hours', earned: false },
-                { id: 'point-collector', name: 'Point Collector', icon: '💎', description: 'Earn 500+ volunteer points', earned: false },
-                { id: 'impact-maker', name: 'Impact Maker', icon: '🌟', description: 'Earn 1000+ volunteer points', earned: false },
-                { id: 'earth-guardian', name: 'Earth Guardian', icon: '🌍', description: 'Complete 3 environment events', earned: false },
-                { id: 'animal-friend', name: 'Animal Friend', icon: '🐾', description: 'Complete 3 animal welfare events', earned: false },
-                { id: 'educator', name: 'Educator', icon: '📚', description: 'Complete 3 education events', earned: false },
-                { id: 'health-hero', name: 'Health Hero', icon: '❤️', description: 'Complete 3 health events', earned: false },
-                { id: 'weekend-warrior', name: 'Weekend Warrior', icon: '🏆', description: 'Complete events on 5 weekends', earned: false }
+                { id: 'new-volunteer', name: 'New Volunteer', icon: '🎉', description: 'Join Actify', requirement: 'joined' },
+                { id: 'first-registration', name: 'First Registration', icon: '📝', description: 'Register for your first event', requirement: 'registered' },
+                { id: 'first-step', name: 'First Steps', icon: '🌱', description: 'Complete 1 verified event', requirement: 1, type: 'events' },
+                { id: 'helping-hand', name: 'Community Helper', icon: '🤝', description: 'Complete 5 verified events', requirement: 5, type: 'events' },
+                { id: 'community-hero', name: 'Community Hero', icon: '🦸', description: 'Complete 10 verified events', requirement: 10, type: 'events' },
+                { id: 'bronze', name: 'Bronze Contributor', icon: '🥉', description: 'Earn 500+ points', requirement: 500, type: 'points' },
+                { id: 'silver', name: 'Silver Contributor', icon: '🥈', description: 'Earn 1500+ points', requirement: 1500, type: 'points' },
+                { id: 'gold', name: 'Gold Contributor', icon: '🥇', description: 'Earn 3000+ points', requirement: 3000, type: 'points' }
             ];
 
             // Define achievements data
@@ -234,7 +235,6 @@
                 loadProfilePageData();
                 setupProfileShare();
                 setupProfileImageUpload();
-                setupEmojiPicker();
                 loadSavedAvatar();
                 if (window.lucide) {
                     window.lucide.createIcons();
@@ -293,56 +293,27 @@
                 }
             }
             
-            // Setup emoji picker (small smile button)
-            function setupEmojiPicker() {
-                createAvatarUploader('changeEmojiBtn', null, (avatarData) => {
-                    // Only apply emoji, don't override image
-                    const savedImage = localStorage.getItem('profileImage');
-                    if (!savedImage) {
-                        // No image uploaded, show emoji
-                        const avatarLetter = document.getElementById('profileAvatarLetter');
-                        const avatarImg = document.getElementById('profileAvatarImg');
-                        const navAvatar = document.getElementById('navAvatar');
-                        
-                        if (avatarLetter && avatarData.emoji) {
-                            avatarLetter.textContent = avatarData.emoji;
-                            avatarLetter.style.fontSize = '3rem';
-                            avatarLetter.style.display = 'flex';
-                            if (avatarImg) avatarImg.style.display = 'none';
-                        }
-                        
-                        if (navAvatar && avatarData.emoji) {
-                            navAvatar.textContent = avatarData.emoji;
-                            navAvatar.style.fontSize = '1.2rem';
-                        }
-                    }
-                });
-            }
-            
             // Load saved avatar on page load
             function loadSavedAvatar() {
-                // First check for uploaded image
+                // Check for uploaded image
                 const savedImage = localStorage.getItem('profileImage');
                 if (savedImage) {
                     displayProfileImage(savedImage);
                     return;
                 }
                 
-                // Then check for emoji
-                const savedAvatar = localStorage.getItem('userAvatar');
-                if (savedAvatar) {
-                    const avatarData = JSON.parse(savedAvatar);
-                    const avatarLetter = document.getElementById('profileAvatarLetter');
-                    const navAvatar = document.getElementById('navAvatar');
-                    
-                    if (avatarLetter && avatarData.emoji) {
-                        avatarLetter.textContent = avatarData.emoji;
-                        avatarLetter.style.fontSize = '3rem';
-                    }
-                    
-                    if (navAvatar && avatarData.emoji) {
-                        navAvatar.textContent = avatarData.emoji;
-                    }
+                // If no image, show first letter of name
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const firstLetter = (user.firstName || 'U').charAt(0).toUpperCase();
+                const avatarLetter = document.getElementById('profileAvatarLetter');
+                const navAvatar = document.getElementById('navAvatar');
+                
+                if (avatarLetter) {
+                    avatarLetter.textContent = firstLetter;
+                    avatarLetter.style.display = 'flex';
+                }
+                if (navAvatar) {
+                    navAvatar.textContent = firstLetter;
                 }
             }
 
@@ -420,11 +391,21 @@
                     emailEl.textContent = data.email || '';
                 }
 
-                // Update avatar
-                const avatarLetter = (data.firstName || 'U').charAt(0).toUpperCase();
-                document.querySelectorAll('#profileAvatarNew, #navAvatar').forEach(el => {
-                    if (el) el.textContent = avatarLetter;
-                });
+                // Update avatar ONLY if no profile image is set
+                const savedImage = localStorage.getItem('profileImage');
+                if (!savedImage) {
+                    const avatarLetter = (data.firstName || 'U').charAt(0).toUpperCase();
+                    const profileAvatarLetter = document.getElementById('profileAvatarLetter');
+                    const navAvatar = document.getElementById('navAvatar');
+                    
+                    if (profileAvatarLetter) {
+                        profileAvatarLetter.textContent = avatarLetter;
+                        profileAvatarLetter.style.display = 'flex';
+                    }
+                    if (navAvatar && !navAvatar.querySelector('img')) {
+                        navAvatar.textContent = avatarLetter;
+                    }
+                }
 
                 // Update stats
                 const points = data.volunteerPoints || 0;
@@ -447,18 +428,23 @@
             }
 
             function countEarnedBadges(data) {
-                let count = 0;
+                let count = 1; // Always have "New Volunteer" badge
                 const points = data.volunteerPoints || 0;
                 const events = data.eventsCompleted || 0;
-                const hours = data.volunteerHours || 0;
+                
+                // Check if registered for any event
+                const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+                if (registrations.length > 0) count++;
 
+                // Event badges
                 if (events >= 1) count++;
                 if (events >= 5) count++;
                 if (events >= 10) count++;
-                if (hours >= 20) count++;
-                if (hours >= 50) count++;
+                
+                // Points badges
                 if (points >= 500) count++;
-                if (points >= 1000) count++;
+                if (points >= 1500) count++;
+                if (points >= 3000) count++;
 
                 return count;
             }
@@ -471,21 +457,23 @@
 
                 const points = data.volunteerPoints || 0;
                 const events = data.eventsCompleted || 0;
-                const hours = data.volunteerHours || 0;
+                const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+                const hasRegistered = registrations.length > 0;
 
                 // Determine earned badges based on stats
                 const badges = allBadges.map(badge => {
                     let earned = false;
-                    switch(badge.id) {
-                        case 'first-step': earned = events >= 1; break;
-                        case 'helping-hand': earned = events >= 5; break;
-                        case 'community-hero': earned = events >= 10; break;
-                        case 'time-giver': earned = hours >= 20; break;
-                        case 'dedicated': earned = hours >= 50; break;
-                        case 'point-collector': earned = points >= 500; break;
-                        case 'impact-maker': earned = points >= 1000; break;
-                        default: earned = false;
+                    
+                    if (badge.requirement === 'joined') {
+                        earned = true; // Always earned
+                    } else if (badge.requirement === 'registered') {
+                        earned = hasRegistered;
+                    } else if (badge.type === 'events') {
+                        earned = events >= badge.requirement;
+                    } else if (badge.type === 'points') {
+                        earned = points >= badge.requirement;
                     }
+                    
                     return { ...badge, earned };
                 });
 
@@ -497,7 +485,8 @@
                 badgeGrid.innerHTML = badges.map(badge => `
                     <div class="badge-item ${badge.earned ? 'earned' : 'locked'}">
                         <div class="badge-icon-wrapper ${badge.earned ? '' : 'locked'}">
-                            <span class="badge-emoji">${badge.earned ? badge.icon : '🔒'}</span>
+                            <span class="badge-emoji ${badge.earned ? '' : 'greyed'}">${badge.icon}</span>
+                            ${!badge.earned ? '<span class="lock-icon">🔒</span>' : ''}
                         </div>
                         <span class="badge-name">${badge.name}</span>
                         <span class="badge-desc">${badge.description}</span>

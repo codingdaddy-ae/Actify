@@ -30,9 +30,10 @@ function getEventImage(event) {
 }
 
 // Create Event Card Component with expandable details
-function createEventCard(event) {
+function createEventCard(event, userRegistrations = []) {
     const imageUrl = getEventImage(event);
     const cardId = `event-card-${event.id}`;
+    const isRegistered = userRegistrations.includes(event.id) || userRegistrations.includes(String(event.id));
     return `
         <div class="event-card" id="${cardId}">
             <div class="event-image">
@@ -105,11 +106,12 @@ function createEventCard(event) {
                             Details
                         </button>
                         <button 
-                            class="btn btn-outline btn-sm" 
+                            class="btn ${isRegistered ? 'btn-primary' : 'btn-outline'} btn-sm" 
                             onclick="handleEventRegistration(${event.id})"
                             data-event-id="${event.id}"
+                            ${isRegistered ? 'disabled' : ''}
                         >
-                            Register
+                            ${isRegistered ? '✓ Registered' : 'Register'}
                         </button>
                     </div>
                 </div>
@@ -145,6 +147,11 @@ function toggleEventDetails(eventId) {
 async function handleEventRegistration(eventId) {
     const button = document.querySelector(`button[data-event-id="${eventId}"]`);
     if (!button) return;
+    
+    // Check if already registered
+    if (button.textContent.includes('Registered')) {
+        return;
+    }
 
     const originalText = button.textContent;
     button.textContent = 'Registering...';
@@ -153,13 +160,59 @@ async function handleEventRegistration(eventId) {
     const success = await registerForEvent(eventId);
 
     if (success) {
-        button.textContent = 'Registered';
+        button.textContent = '✓ Registered';
         button.classList.remove('btn-outline');
         button.classList.add('btn-primary');
+        
+        // Save registration to localStorage for persistence
+        saveUserRegistration(eventId);
     } else {
         button.textContent = originalText;
         button.disabled = false;
     }
+}
+
+// Save user registration to localStorage
+function saveUserRegistration(eventId) {
+    const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+    if (!registrations.includes(eventId) && !registrations.includes(String(eventId))) {
+        registrations.push(eventId);
+        localStorage.setItem('userRegistrations', JSON.stringify(registrations));
+    }
+}
+
+// Get user registrations from localStorage and API
+async function getUserRegistrations() {
+    // Get local registrations first
+    let registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+    
+    // Try to fetch from API as well
+    try {
+        const token = localStorage.getItem('token');
+        
+        if (token) {
+            const response = await fetch(`${API_BASE_URL}/events/user/registered`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const apiRegistrations = await response.json();
+                // Merge API registrations with local
+                apiRegistrations.forEach(reg => {
+                    const eventId = reg.eventId || reg.event_id || reg.id;
+                    if (eventId && !registrations.includes(eventId) && !registrations.includes(String(eventId))) {
+                        registrations.push(eventId);
+                    }
+                });
+                // Save merged list
+                localStorage.setItem('userRegistrations', JSON.stringify(registrations));
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching user registrations:', error);
+    }
+    
+    return registrations;
 }
 
 // Create Badge Component

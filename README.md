@@ -1,15 +1,22 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Actify-Volunteer%20Management%20Platform%20%7C%20Spring%20Boot%20%7C%20Modern%20Frontend-10b981?style=for-the-badge" alt="Actify"/>
+  <img src="https://img.shields.io/badge/Actify-Volunteer%20Management%20Platform-10b981?style=for-the-badge" alt="Actify"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+  <img src="https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" alt="Railway"/>
 </p>
 
-<h1 align="center">Actify</h1>
+<h1 align="center">🌱 Actify</h1>
 
 <p align="center">
   <img src="https://img.icons8.com/color/96/000000/leaf.png" width="80"/>
 </p>
 
 <p align="center">
-  <b>🌱 Empowering communities through volunteer engagement with gamified experiences and meaningful rewards</b>
+  <b>Empowering communities through volunteer engagement with gamified experiences and meaningful rewards</b>
+</p>
+
+<p align="center">
+  <a href="https://actify-production-a545.up.railway.app/"><img src="https://img.shields.io/badge/🚀%20Live%20Access-Click%20Here-success?style=for-the-badge" alt="Live Demo"/></a>
 </p>
 
 ---
@@ -52,13 +59,9 @@ Actify/
 
 ## 🌐 Live Demo
 
-**🚀 Live Demo Available:** [Actify Demo](https://actify-demo.com)
+**🚀 Production Deployment:** [https://actify-production-a545.up.railway.app](https://actify-production-a545.up.railway.app)
 
-> ⚠️ **Important Note:** The backend server may take a few minutes to wake up on free hosting tiers.
-
-**Demo Credentials:**
-- 📧 Email: `john.doe@example.com`
-- 🔑 Password: `password123`
+> ⚠️ **Note:** The backend server is hosted on Railway free tier and may take 30-60 seconds to wake up on first request.
 
 ---
 
@@ -105,33 +108,36 @@ python -m http.server 5500
   <img src="https://img.icons8.com/color/48/000000/group.png" width="60"/>
 </p>
 
+<p align="center">
+  <b>🌟 Meet the creators behind Actify 🌟</b>
+</p>
+
 <table align="center">
   <tr>
     <td align="center">
-      <img src="https://img.shields.io/badge/👨‍💻-Arghadeep%20Tambuli-blue?style=for-the-badge" alt="Arghadeep Tambuli"/>
+      <img src="https://img.shields.io/badge/🚀-Arghadeep%20Tambuli-10b981?style=for-the-badge&labelColor=064e3b" alt="Arghadeep Tambuli"/>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://img.shields.io/badge/👨‍💻-Abhilasha%20Shee-blue?style=for-the-badge" alt="Abhilasha Shee"/>
+      <img src="https://img.shields.io/badge/💜-Abhilasha%20Shee-8b5cf6?style=for-the-badge&labelColor=5b21b6" alt="Abhilasha Shee"/>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://img.shields.io/badge/👨‍💻-Meghna%20Mukhopadhay-blue?style=for-the-badge" alt="Meghna Mukhopadhay"/>
+      <img src="https://img.shields.io/badge/🌊-Meghna%20Mukhopadhyay-0ea5e9?style=for-the-badge&labelColor=0369a1" alt="Meghna Mukhopadhyay"/>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="https://img.shields.io/badge/👨‍💻-Soumi%20Sahu-blue?style=for-the-badge" alt="Soumi Sahu"/>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <b>Building communities through technology</b>
+      <img src="https://img.shields.io/badge/🌸-Soumi%20Sahu-ec4899?style=for-the-badge&labelColor=9d174d" alt="Soumi Sahu"/>
     </td>
   </tr>
 </table>
+
+<p align="center">
+  <i>✨ Building communities through technology ✨</i>
+</p>
 
 ---
 
@@ -143,4 +149,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <p align="center">
   <img src="https://img.shields.io/badge/Made%20with-💚%20for%20Volunteers-10b981?style=for-the-badge"/>
+</p>
+
+<p align="center">
+  <sub>© 2025 Actify Team. All rights reserved.</sub>
 </p>

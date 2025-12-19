@@ -101,46 +101,108 @@
 
     <script src="app.js"></script>
     <script>
+        // SECURITY: Check authentication before allowing access
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+        })();
+        
         lucide.createIcons();
 
-        // Sample leaderboard data
-        const SAMPLE_LEADERBOARD = [
-            { rank: 1, name: "Sarah Chen", email: "sarah@actify.app", points: 8450, events: 42 },
-            { rank: 2, name: "Marcus Johnson", email: "marcus@actify.app", points: 7230, events: 38 },
-            { rank: 3, name: "Emma Davis", email: "emma@actify.app", points: 6890, events: 35 },
-            { rank: 4, name: "Jordan Lee", email: "jordan@actify.app", points: 2980, events: 15 },
-            { rank: 5, name: "Taylor Swift", email: "taylor@actify.app", points: 2750, events: 14 },
-            { rank: 6, name: "Chris Brown", email: "chris@actify.app", points: 2450, events: 12 },
-            { rank: 7, name: "Kim Park", email: "kim@actify.app", points: 2100, events: 11 },
-            { rank: 8, name: "Sam Wilson", email: "sam@actify.app", points: 1890, events: 9 },
-            { rank: 9, name: "Riley Cooper", email: "riley@actify.app", points: 1650, events: 8 }
-        ];
+        let leaderboardData = [];
+        let refreshInterval = null;
+
+        async function fetchLeaderboard() {
+            try {
+                const token = localStorage.getItem('token');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+                
+                // Try to fetch from API
+                const response = await fetch(`${API_BASE_URL}/users/leaderboard`, { headers });
+                
+                if (response.ok) {
+                    const users = await response.json();
+                    // Sort by volunteerPoints descending and add rank
+                    leaderboardData = users
+                        .sort((a, b) => (b.volunteerPoints || 0) - (a.volunteerPoints || 0))
+                        .slice(0, 20)
+                        .map((user, index) => ({
+                            rank: index + 1,
+                            id: user.id,
+                            name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'Anonymous',
+                            email: user.email,
+                            points: user.volunteerPoints || 0,
+                            events: user.eventsCompleted || 0,
+                            hours: user.volunteerHours || 0
+                        }));
+                } else {
+                    // Fallback: fetch all users and sort
+                    const allUsersResponse = await fetch(`${API_BASE_URL}/users`, { headers });
+                    if (allUsersResponse.ok) {
+                        const users = await allUsersResponse.json();
+                        leaderboardData = users
+                            .sort((a, b) => (b.volunteerPoints || 0) - (a.volunteerPoints || 0))
+                            .slice(0, 20)
+                            .map((user, index) => ({
+                                rank: index + 1,
+                                id: user.id,
+                                name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'Anonymous',
+                                email: user.email,
+                                points: user.volunteerPoints || 0,
+                                events: user.eventsCompleted || 0,
+                                hours: user.volunteerHours || 0
+                            }));
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching leaderboard:', error);
+            }
+            
+            renderLeaderboard();
+        }
 
         function renderLeaderboard() {
             const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
             const currentUserEmail = currentUser.email;
+            const currentUserId = currentUser.id;
 
             // Check if current user is in leaderboard
-            const userInLeaderboard = SAMPLE_LEADERBOARD.find(u => u.email === currentUserEmail);
+            const userInLeaderboard = leaderboardData.find(u => u.email === currentUserEmail || u.id === currentUserId);
 
             const table = document.getElementById('leaderboardTable');
+            
+            if (leaderboardData.length === 0) {
+                table.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <div class="loading-spinner" style="margin: 0 auto 1rem;"></div>
+                        <p style="color: var(--text-muted);">Loading leaderboard...</p>
+                    </div>
+                `;
+                return;
+            }
+
             table.innerHTML = `
                 <div class="leaderboard-header">
                     <div class="lb-col-rank">Rank</div>
                     <div class="lb-col-name">Volunteer</div>
-                    <div class="lb-col-points">Points</div>
+                    <div class="lb-col-points">Coins</div>
                     <div class="lb-col-events">Events</div>
                 </div>
-                ${SAMPLE_LEADERBOARD.map(user => `
-                    <div class="leaderboard-row ${user.email === currentUserEmail ? 'current-user' : ''}">
+                ${leaderboardData.map(user => `
+                    <div class="leaderboard-row ${(user.email === currentUserEmail || user.id === currentUserId) ? 'current-user' : ''}" style="transition: all 0.3s ease;">
                         <div class="lb-col-rank">
-                            <span class="rank-badge ${user.rank <= 3 ? 'rank-top' : ''}">#${user.rank}</span>
+                            <span class="rank-badge ${user.rank === 1 ? 'rank-gold' : user.rank === 2 ? 'rank-silver' : user.rank === 3 ? 'rank-bronze' : ''}" style="${user.rank === 1 ? 'background: linear-gradient(135deg, #ffd700, #ffb800); color: #333;' : user.rank === 2 ? 'background: linear-gradient(135deg, #c0c0c0, #a8a8a8); color: #333;' : user.rank === 3 ? 'background: linear-gradient(135deg, #cd7f32, #b87333); color: white;' : ''}">
+                                ${user.rank === 1 ? '🥇' : user.rank === 2 ? '🥈' : user.rank === 3 ? '🥉' : '#' + user.rank}
+                            </span>
                         </div>
                         <div class="lb-col-name">
                             <div class="user-info">
-                                <div class="user-avatar-sm">${user.name.charAt(0)}</div>
+                                <div class="user-avatar-sm" style="${user.rank <= 3 ? 'border: 2px solid var(--emerald-500);' : ''}">${user.name.charAt(0).toUpperCase()}</div>
                                 <span>${user.name}</span>
-                                ${user.email === currentUserEmail ? '<span class="you-badge">You</span>' : ''}
+                                ${(user.email === currentUserEmail || user.id === currentUserId) ? '<span class="you-badge">You</span>' : ''}
                             </div>
                         </div>
                         <div class="lb-col-points">
@@ -149,20 +211,34 @@
                         <div class="lb-col-events">${user.events}</div>
                     </div>
                 `).join('')}
-                ${!userInLeaderboard ? `
+                ${!userInLeaderboard && currentUserEmail ? `
                     <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-lg); text-align: center;">
                         <i data-lucide="sparkles" style="width: 2rem; height: 2rem; margin: 0 auto 0.5rem; display: block; color: var(--emerald-500);"></i>
                         <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">You're not on the leaderboard yet!</p>
                         <p style="color: var(--text-muted); margin: 0;">Keep volunteering and making an impact to see your name here. Every event brings you closer to the top! 🌟</p>
                     </div>
                 ` : ''}
+                <div style="text-align: center; margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted);">
+                    <i data-lucide="refresh-cw" style="width: 0.875rem; height: 0.875rem; display: inline; vertical-align: middle;"></i>
+                    Auto-refreshes every 30 seconds
+                </div>
             `;
 
             // Re-initialize icons after DOM update
             lucide.createIcons();
         }
 
-        renderLeaderboard();
+        // Initial fetch
+        fetchLeaderboard();
+        
+        // Auto-refresh every 30 seconds for live updates
+        refreshInterval = setInterval(fetchLeaderboard, 30000);
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) clearInterval(refreshInterval);
+        });
+
         updateUserCoins();
         updateUserAvatar();
     </script>
