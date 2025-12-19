@@ -29,13 +29,14 @@ function getEventImage(event) {
     return CAUSE_IMAGES[cause] || CAUSE_IMAGES.other;
 }
 
-// Create Event Card Component
+// Create Event Card Component with expandable details
 function createEventCard(event) {
     const imageUrl = getEventImage(event);
+    const cardId = `event-card-${event.id}`;
     return `
-        <div class="event-card">
+        <div class="event-card" id="${cardId}">
             <div class="event-image">
-                <img src="${imageUrl}" alt="${event.title}" onerror="this.src='${CAUSE_IMAGES.other}'" />
+                <img src="${imageUrl}" alt="${event.title}" onerror="this.src='${CAUSE_IMAGES.other}'" loading="lazy" />
             </div>
             <div class="event-content">
                 <div class="event-header">
@@ -63,23 +64,81 @@ function createEventCard(event) {
                     </div>
                 </div>
                 
+                <!-- Expandable Details Section -->
+                <div class="event-details-expanded" id="details-${event.id}" style="display: none;">
+                    <div class="expanded-divider"></div>
+                    <div class="expanded-content">
+                        <div class="expanded-row">
+                            <i data-lucide="clock" class="icon-sm"></i>
+                            <span><strong>Duration:</strong> ${event.duration || '2-3'} hours</span>
+                        </div>
+                        <div class="expanded-row">
+                            <i data-lucide="info" class="icon-sm"></i>
+                            <span><strong>About:</strong> ${event.fullDescription || event.description}</span>
+                        </div>
+                        ${event.requirements ? `
+                        <div class="expanded-row">
+                            <i data-lucide="clipboard-list" class="icon-sm"></i>
+                            <span><strong>Requirements:</strong> ${event.requirements}</span>
+                        </div>
+                        ` : ''}
+                        <div class="expanded-row">
+                            <i data-lucide="map" class="icon-sm"></i>
+                            <span><strong>Address:</strong> ${event.fullAddress || event.location}</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="event-footer">
                     <div class="event-coins">
                         <i data-lucide="zap" class="icon-sm"></i>
                         <span class="coins-amount">${event.coinsReward}</span>
                         <span class="coins-text">coins</span>
                     </div>
-                    <button 
-                        class="btn btn-outline btn-sm" 
-                        onclick="handleEventRegistration(${event.id})"
-                        data-event-id="${event.id}"
-                    >
-                        Register
-                    </button>
+                    <div class="event-actions">
+                        <button 
+                            class="btn btn-ghost btn-sm" 
+                            onclick="toggleEventDetails(${event.id})"
+                            data-details-btn="${event.id}"
+                        >
+                            <i data-lucide="chevron-down" class="icon-sm"></i>
+                            Details
+                        </button>
+                        <button 
+                            class="btn btn-outline btn-sm" 
+                            onclick="handleEventRegistration(${event.id})"
+                            data-event-id="${event.id}"
+                        >
+                            Register
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     `;
+}
+
+// Toggle event details expansion
+function toggleEventDetails(eventId) {
+    const detailsDiv = document.getElementById(`details-${eventId}`);
+    const btn = document.querySelector(`button[data-details-btn="${eventId}"]`);
+    const card = document.getElementById(`event-card-${eventId}`);
+    
+    if (!detailsDiv || !btn) return;
+    
+    const isExpanded = detailsDiv.style.display !== 'none';
+    
+    if (isExpanded) {
+        detailsDiv.style.display = 'none';
+        btn.innerHTML = '<i data-lucide="chevron-down" class="icon-sm"></i> Details';
+        card.classList.remove('expanded');
+    } else {
+        detailsDiv.style.display = 'block';
+        btn.innerHTML = '<i data-lucide="chevron-up" class="icon-sm"></i> Hide';
+        card.classList.add('expanded');
+    }
+    
+    lucide.createIcons();
 }
 
 // Handle event registration

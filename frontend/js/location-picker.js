@@ -14,6 +14,12 @@ function initLocationPicker(containerId, initialLat = null, initialLng = null) {
         return null;
     }
 
+    // Ensure container has proper dimensions
+    if (!container.style.height || container.offsetHeight === 0) {
+        container.style.height = '300px';
+        container.style.minHeight = '300px';
+    }
+
     // Clear any existing map
     if (locationPickerMap) {
         locationPickerMap.remove();
@@ -27,18 +33,31 @@ function initLocationPicker(containerId, initialLat = null, initialLng = null) {
     const defaultLng = initialLng || 78.9629;
     const defaultZoom = initialLat ? 17 : 5;
 
-    // Create map
-    locationPickerMap = L.map(containerId, {
-        center: [defaultLat, defaultLng],
-        zoom: defaultZoom,
-        zoomControl: true
-    });
+    try {
+        // Create map
+        locationPickerMap = L.map(containerId, {
+            center: [defaultLat, defaultLng],
+            zoom: defaultZoom,
+            zoomControl: true
+        });
 
-    // Add tile layer with high detail
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-    }).addTo(locationPickerMap);
+        // Add tile layer with high detail
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(locationPickerMap);
+
+        // Fix map rendering issues after container becomes visible
+        setTimeout(function() {
+            if (locationPickerMap) {
+                locationPickerMap.invalidateSize();
+                console.log('Map size invalidated for proper rendering');
+            }
+        }, 200);
+    } catch (error) {
+        console.error('Error creating map:', error);
+        return null;
+    }
 
     // Add initial marker if coordinates provided
     if (initialLat && initialLng) {
