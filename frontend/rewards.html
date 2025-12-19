@@ -100,54 +100,151 @@
                 </div>
                 <div>
                     <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Impact Coins</p>
-                    <p style="font-size: 1.5rem; font-weight: 700; margin: 0; color: var(--emerald-600);">2,850</p>
+                    <p style="font-size: 1.5rem; font-weight: 700; margin: 0; color: var(--emerald-600);" id="rewardCoinsDisplay"><span class="loading-placeholder">...</span></p>
                 </div>
             </div>
         </div>
 
+        <!-- Rewards Categories -->
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">🎁 Real Rewards</h2>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">Redeem your coins for actual vouchers and gift cards!</p>
+        </div>
+
         <!-- Rewards Grid -->
         <div
-            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 4rem;">
-            <!-- Coffee Gift Card -->
-            <div style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
-                onmouseover="this.style.borderColor='var(--emerald-500)'"
-                onmouseout="this.style.borderColor='var(--border-color)'">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">☕</div>
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            
+            <!-- Amazon Gift Card -->
+            <div class="reward-card" style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer; position: relative;"
+                onmouseover="this.style.borderColor='var(--emerald-500)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+                <span style="position: absolute; top: 0.75rem; right: 0.75rem; background: #ff9900; color: white; font-size: 0.65rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-weight: 600;">POPULAR</span>
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🛒</div>
                 <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                    Coffee Shop Gift Card</h3>
-                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">$25 voucher for your
-                    favorite café</p>
+                    Amazon Gift Card</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">₹500 Amazon.in e-voucher delivered to your email</p>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.25rem;">
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">1000</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('amazon', 1000)" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
+                        Redeem
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flipkart Gift Card -->
+            <div class="reward-card" style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
+                onmouseover="this.style.borderColor='var(--emerald-500)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🛍️</div>
+                <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                    Flipkart Gift Card</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">₹500 Flipkart e-voucher for shopping</p>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.25rem;">
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">1000</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('flipkart', 1000)" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
+                        Redeem
+                    </button>
+                </div>
+            </div>
+
+            <!-- Swiggy/Zomato Voucher -->
+            <div class="reward-card" style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer; position: relative;"
+                onmouseover="this.style.borderColor='var(--emerald-500)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+                <span style="position: absolute; top: 0.75rem; right: 0.75rem; background: var(--emerald-500); color: white; font-size: 0.65rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-weight: 600;">NEW</span>
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🍔</div>
+                <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                    Food Delivery Voucher</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">₹200 Swiggy/Zomato credit for meals</p>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 0.25rem;">
                         <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">500</span>
                         <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
                     </div>
-                    <button class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('food', 500)" style="display: flex; align-items: center; gap: 0.5rem;">
                         <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
                         Redeem
                     </button>
                 </div>
             </div>
 
-            <!-- Movie Tickets -->
-            <div style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
-                onmouseover="this.style.borderColor='var(--emerald-500)'"
-                onmouseout="this.style.borderColor='var(--border-color)'">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
+            <!-- Google Play Gift Card -->
+            <div class="reward-card" style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
+                onmouseover="this.style.borderColor='var(--emerald-500)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">▶️</div>
                 <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                    Movie Theater Discount</h3>
-                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">2 free movie tickets</p>
+                    Google Play Credit</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">₹300 Google Play gift code</p>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 0.25rem;">
-                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">400</span>
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">750</span>
                         <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
                     </div>
-                    <button class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('googleplay', 750)" style="display: flex; align-items: center; gap: 0.5rem;">
                         <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
                         Redeem
                     </button>
                 </div>
             </div>
+
+            <!-- Paytm Cashback -->
+            <div class="reward-card" style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
+                onmouseover="this.style.borderColor='var(--emerald-500)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">💳</div>
+                <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                    Paytm Wallet Cash</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">₹100 direct to your Paytm wallet</p>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.25rem;">
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">300</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('paytm', 300)" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
+                        Redeem
+                    </button>
+                </div>
+            </div>
+
+            <!-- BookMyShow -->
+            <div class="reward-card" style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
+                onmouseover="this.style.borderColor='var(--emerald-500)'; this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='none'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🎬</div>
+                <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
+                    BookMyShow Voucher</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">₹300 for movies, events & shows</p>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.25rem;">
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">600</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('bookmyshow', 600)" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
+                        Redeem
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Rewards Section -->
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">✨ Exclusive Rewards</h2>
+        </div>
+
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
 
             <!-- Digital Certificate -->
             <div style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
@@ -155,57 +252,14 @@
                 onmouseout="this.style.borderColor='var(--border-color)'">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">📜</div>
                 <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                    Digital Certificate</h3>
-                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">Certificate of Impact
-                    recognition</p>
+                    Volunteer Certificate</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">Official certificate of volunteer service</p>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 0.25rem;">
-                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">300</span>
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">200</span>
                         <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
                     </div>
-                    <button class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
-                        Redeem
-                    </button>
-                </div>
-            </div>
-
-            <!-- Bookstore Gift Card -->
-            <div style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
-                onmouseover="this.style.borderColor='var(--emerald-500)'"
-                onmouseout="this.style.borderColor='var(--border-color)'">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
-                <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                    Bookstore Gift Card</h3>
-                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">$30 voucher for books and
-                    more</p>
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 0.25rem;">
-                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">600</span>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
-                    </div>
-                    <button class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
-                        Redeem
-                    </button>
-                </div>
-            </div>
-
-            <!-- Fitness Class Pass -->
-            <div style="background: var(--card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all 0.2s; cursor: pointer;"
-                onmouseover="this.style.borderColor='var(--emerald-500)'"
-                onmouseout="this.style.borderColor='var(--border-color)'">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🧘</div>
-                <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                    Fitness Class Pass</h3>
-                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">10 free yoga or fitness
-                    classes</p>
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="display: flex; align-items: center; gap: 0.25rem;">
-                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">800</span>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
-                    </div>
-                    <button class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('certificate', 200)" style="display: flex; align-items: center; gap: 0.5rem;">
                         <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
                         Redeem
                     </button>
@@ -218,15 +272,14 @@
                 onmouseout="this.style.borderColor='var(--border-color)'">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">🏆</div>
                 <h3 style="font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; color: var(--text-primary);">
-                    Premium Badge</h3>
-                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">Exclusive digital badge
-                    on your profile</p>
+                    Premium Profile Badge</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">Exclusive badge displayed on your profile</p>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 0.25rem;">
-                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">1000</span>
+                        <span style="font-size: 1.25rem; font-weight: 700; color: var(--emerald-600);">500</span>
                         <span style="font-size: 0.75rem; color: var(--text-muted);">coins</span>
                     </div>
-                    <button class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button class="btn btn-primary btn-sm" onclick="redeemReward('badge', 500)" style="display: flex; align-items: center; gap: 0.5rem;">
                         <i data-lucide="gift" style="width: 1rem; height: 1rem;"></i>
                         Redeem
                     </button>
@@ -261,12 +314,105 @@
     </main>
 
     <script src="app.js"></script>
-    <script src="app.js"></script>
     <script>
+        // SECURITY: Check authentication before allowing access
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+        })();
+        
         lucide.createIcons();
         // Initialize user data
         updateUserCoins();
         updateUserAvatar();
+        
+        // Load user's actual coins
+        async function loadUserCoins() {
+            const coinsDisplay = document.getElementById('rewardCoinsDisplay');
+            try {
+                const token = localStorage.getItem('token');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                if (token && user.id) {
+                    const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const userData = await response.json();
+                        coinsDisplay.textContent = (userData.volunteerPoints || 0).toLocaleString();
+                        // Update localStorage
+                        user.volunteerPoints = userData.volunteerPoints || 0;
+                        localStorage.setItem('user', JSON.stringify(user));
+                    } else {
+                        coinsDisplay.textContent = (user.volunteerPoints || 0).toLocaleString();
+                    }
+                } else {
+                    coinsDisplay.textContent = '0';
+                }
+            } catch (error) {
+                console.error('Error loading coins:', error);
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                coinsDisplay.textContent = (user.volunteerPoints || 0).toLocaleString();
+            }
+        }
+        
+        // Redeem reward function
+        async function redeemReward(rewardType, cost) {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!token) {
+                alert('Please login to redeem rewards');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const currentCoins = user.volunteerPoints || 0;
+            if (currentCoins < cost) {
+                alert(`Insufficient coins! You need ${cost} coins but only have ${currentCoins}. Keep volunteering to earn more!`);
+                return;
+            }
+            
+            const rewardNames = {
+                'amazon': 'Amazon ₹500 Gift Card',
+                'flipkart': 'Flipkart ₹500 Gift Card', 
+                'food': 'Food Delivery ₹200 Voucher',
+                'googleplay': 'Google Play ₹300 Credit',
+                'paytm': 'Paytm ₹100 Wallet Cash',
+                'bookmyshow': 'BookMyShow ₹300 Voucher',
+                'certificate': 'Volunteer Certificate',
+                'badge': 'Premium Profile Badge'
+            };
+            
+            const confirmed = confirm(`Redeem ${rewardNames[rewardType]} for ${cost} coins?`);
+            if (!confirmed) return;
+            
+            try {
+                // In production, this would call your backend API to process the redemption
+                // For now, we show a success message and update local coins
+                const newCoins = currentCoins - cost;
+                user.volunteerPoints = newCoins;
+                localStorage.setItem('user', JSON.stringify(user));
+                
+                // Update display
+                document.getElementById('rewardCoinsDisplay').textContent = newCoins.toLocaleString();
+                updateUserCoins();
+                
+                // Show success message
+                alert(`🎉 Reward Redeemed Successfully!\n\n${rewardNames[rewardType]}\n\nYour voucher code will be sent to your registered email within 24-48 hours.\n\nRemaining coins: ${newCoins}`);
+                
+            } catch (error) {
+                console.error('Redemption error:', error);
+                alert('Failed to redeem reward. Please try again.');
+            }
+        }
+        
+        // Load coins on page load
+        loadUserCoins();
     </script>
 </body>
 

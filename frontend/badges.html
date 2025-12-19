@@ -84,63 +84,25 @@
                     style="display: inline-block; vertical-align: middle; color: var(--primary);"></i>
                 Badge System
             </h1>
-            <p class="page-subtitle">Earn badges by reaching milestones and completing challenges</p>
+            <p class="page-subtitle">Earn badges by reaching milestones and completing verified events</p>
+            <p class="badge-counter" id="badgeCounter">Loading badges...</p>
+        </div>
+
+        <!-- Welcome Badges -->
+        <div class="badge-category">
+            <h2 class="category-title">Getting Started</h2>
+            <p class="category-description">Welcome badges for joining and taking your first steps</p>
+            <div class="badges-showcase" id="welcomeBadges">
+                <!-- Dynamically loaded -->
+            </div>
         </div>
 
         <!-- Event Milestones -->
         <div class="badge-category">
             <h2 class="category-title">Event Milestones</h2>
-            <p class="category-description">Unlock badges by completing events</p>
-            <div class="badges-showcase">
-                <div class="badge-card earned">
-                    <div class="badge-icon-large">🌱</div>
-                    <h3 class="badge-title">First Steps</h3>
-                    <p class="badge-description">Complete 1 event</p>
-                    <div class="badge-status earned">
-                        <i data-lucide="check-circle-2"></i>
-                        <span>Earned</span>
-                    </div>
-                </div>
-
-                <div class="badge-card earned">
-                    <div class="badge-icon-large">🤝</div>
-                    <h3 class="badge-title">Community Helper</h3>
-                    <p class="badge-description">Complete 5 events</p>
-                    <div class="badge-status earned">
-                        <i data-lucide="check-circle-2"></i>
-                        <span>Earned</span>
-                    </div>
-                </div>
-
-                <div class="badge-card earned">
-                    <div class="badge-icon-large">🦸</div>
-                    <h3 class="badge-title">Community Hero</h3>
-                    <p class="badge-description">Complete 10 events</p>
-                    <div class="badge-status earned">
-                        <i data-lucide="check-circle-2"></i>
-                        <span>Earned</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">🏆</div>
-                    <h3 class="badge-title">Champion</h3>
-                    <p class="badge-description">Complete 25 events</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">👑</div>
-                    <h3 class="badge-title">Legend</h3>
-                    <p class="badge-description">Complete 50 events</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
+            <p class="category-description">Complete verified volunteer events to unlock these badges</p>
+            <div class="badges-showcase" id="eventBadges">
+                <!-- Dynamically loaded -->
             </div>
         </div>
 
@@ -148,93 +110,17 @@
         <div class="badge-category">
             <h2 class="category-title">Cause Specialists</h2>
             <p class="category-description">Focus on specific causes to earn badges</p>
-            <div class="badges-showcase">
-                <div class="badge-card earned">
-                    <div class="badge-icon-large">🌿</div>
-                    <h3 class="badge-title">Green Guardian</h3>
-                    <p class="badge-description">5 Environment events</p>
-                    <div class="badge-status earned">
-                        <i data-lucide="check-circle-2"></i>
-                        <span>Earned</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">📚</div>
-                    <h3 class="badge-title">Education Champion</h3>
-                    <p class="badge-description">5 Education events</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">⚕️</div>
-                    <h3 class="badge-title">Health Hero</h3>
-                    <p class="badge-description">5 Health events</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">🏘️</div>
-                    <h3 class="badge-title">Community Builder</h3>
-                    <p class="badge-description">5 Community events</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
+            <div class="badges-showcase" id="causeBadges">
+                <!-- Dynamically loaded -->
             </div>
         </div>
 
         <!-- Impact Tiers -->
         <div class="badge-category">
             <h2 class="category-title">Impact Tiers</h2>
-            <p class="category-description">Reach milestones with Impact Coins</p>
-            <div class="badges-showcase">
-                <div class="badge-card earned">
-                    <div class="badge-icon-large">🥉</div>
-                    <h3 class="badge-title">Bronze Contributor</h3>
-                    <p class="badge-description">1,000 coins earned</p>
-                    <div class="badge-status earned">
-                        <i data-lucide="check-circle-2"></i>
-                        <span>Earned</span>
-                    </div>
-                </div>
-
-                <div class="badge-card earned">
-                    <div class="badge-icon-large">🥈</div>
-                    <h3 class="badge-title">Silver Contributor</h3>
-                    <p class="badge-description">2,500 coins earned</p>
-                    <div class="badge-status earned">
-                        <i data-lucide="check-circle-2"></i>
-                        <span>Earned</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">🥇</div>
-                    <h3 class="badge-title">Gold Contributor</h3>
-                    <p class="badge-description">5,000 coins earned</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
-
-                <div class="badge-card locked">
-                    <div class="badge-icon-large">💎</div>
-                    <h3 class="badge-title">Platinum Impact</h3>
-                    <p class="badge-description">10,000 coins earned</p>
-                    <div class="badge-status locked">
-                        <i data-lucide="lock"></i>
-                        <span>Locked</span>
-                    </div>
-                </div>
+            <p class="category-description">Earn points from verified events to unlock these</p>
+            <div class="badges-showcase" id="impactBadges">
+                <!-- Dynamically loaded -->
             </div>
         </div>
 
@@ -267,12 +153,137 @@
     </main>
 
     <script src="app.js"></script>
-    <script src="app.js"></script>
     <script>
+        // SECURITY: Check authentication before allowing access
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+        })();
+        
         lucide.createIcons();
-        // Initialize user data
         updateUserCoins();
         updateUserAvatar();
+
+        // Badge definitions
+        const allBadges = {
+            welcome: [
+                { id: 'new-volunteer', name: 'New Volunteer', icon: '🎉', description: 'Join Actify', requirement: 'joined' },
+                { id: 'first-registration', name: 'First Registration', icon: '📝', description: 'Register for your first event', requirement: 'registered' }
+            ],
+            events: [
+                { id: 'first-step', name: 'First Steps', icon: '🌱', description: 'Complete 1 verified event', requirement: 1, type: 'events' },
+                { id: 'helper', name: 'Community Helper', icon: '🤝', description: 'Complete 5 verified events', requirement: 5, type: 'events' },
+                { id: 'hero', name: 'Community Hero', icon: '🦸', description: 'Complete 10 verified events', requirement: 10, type: 'events' },
+                { id: 'champion', name: 'Champion', icon: '🏆', description: 'Complete 25 verified events', requirement: 25, type: 'events' },
+                { id: 'legend', name: 'Legend', icon: '👑', description: 'Complete 50 verified events', requirement: 50, type: 'events' }
+            ],
+            cause: [
+                { id: 'green-guardian', name: 'Green Guardian', icon: '🌿', description: '5 Environment events', requirement: 5, type: 'environment' },
+                { id: 'edu-champion', name: 'Education Champion', icon: '📚', description: '5 Education events', requirement: 5, type: 'education' },
+                { id: 'health-hero', name: 'Health Hero', icon: '⚕️', description: '5 Health events', requirement: 5, type: 'health' },
+                { id: 'community-builder', name: 'Community Builder', icon: '🏘️', description: '5 Community events', requirement: 5, type: 'community' }
+            ],
+            impact: [
+                { id: 'bronze', name: 'Bronze Contributor', icon: '🥉', description: '500 coins earned', requirement: 500, type: 'points' },
+                { id: 'silver', name: 'Silver Contributor', icon: '🥈', description: '1,500 coins earned', requirement: 1500, type: 'points' },
+                { id: 'gold', name: 'Gold Contributor', icon: '🥇', description: '3,000 coins earned', requirement: 3000, type: 'points' },
+                { id: 'platinum', name: 'Platinum Impact', icon: '💎', description: '5,000 coins earned', requirement: 5000, type: 'points' }
+            ]
+        };
+
+        // Load badges on page load
+        async function loadBadges() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/users/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                let userData = { volunteerPoints: 0, eventsCompleted: 0 };
+                if (response.ok) {
+                    userData = await response.json();
+                } else {
+                    const stored = localStorage.getItem('user');
+                    if (stored) userData = JSON.parse(stored);
+                }
+
+                // Check for registration status
+                const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+                const hasRegistered = registrations.length > 0;
+
+                renderBadgeCategory('welcomeBadges', allBadges.welcome, userData, hasRegistered);
+                renderBadgeCategory('eventBadges', allBadges.events, userData, hasRegistered);
+                renderBadgeCategory('causeBadges', allBadges.cause, userData, hasRegistered);
+                renderBadgeCategory('impactBadges', allBadges.impact, userData, hasRegistered);
+
+                // Update counter
+                const totalEarned = countEarnedBadges(userData, hasRegistered);
+                const totalBadges = Object.values(allBadges).flat().length;
+                document.getElementById('badgeCounter').textContent = `${totalEarned} of ${totalBadges} badges earned`;
+
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error loading badges:', error);
+            }
+        }
+
+        function countEarnedBadges(userData, hasRegistered) {
+            let count = 2; // Welcome badges (joined + registered if applicable)
+            if (!hasRegistered) count = 1;
+            
+            const points = userData.volunteerPoints || 0;
+            const events = userData.eventsCompleted || 0;
+
+            // Event badges
+            allBadges.events.forEach(b => { if (events >= b.requirement) count++; });
+            // Impact badges
+            allBadges.impact.forEach(b => { if (points >= b.requirement) count++; });
+            
+            return count;
+        }
+
+        function renderBadgeCategory(containerId, badges, userData, hasRegistered) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const points = userData.volunteerPoints || 0;
+            const events = userData.eventsCompleted || 0;
+
+            container.innerHTML = badges.map(badge => {
+                let earned = false;
+                
+                // Check if badge is earned
+                if (badge.requirement === 'joined') {
+                    earned = true; // Always earned once they're on this page
+                } else if (badge.requirement === 'registered') {
+                    earned = hasRegistered;
+                } else if (badge.type === 'events') {
+                    earned = events >= badge.requirement;
+                } else if (badge.type === 'points') {
+                    earned = points >= badge.requirement;
+                }
+                // Cause badges stay locked by default (would need event-type tracking)
+
+                return `
+                    <div class="badge-card ${earned ? 'earned' : 'locked'}">
+                        <div class="badge-icon-large ${earned ? '' : 'locked-icon'}">${badge.icon}</div>
+                        ${!earned ? '<div class="lock-overlay"><i data-lucide="lock"></i></div>' : ''}
+                        <h3 class="badge-title">${badge.name}</h3>
+                        <p class="badge-description">${badge.description}</p>
+                        <div class="badge-status ${earned ? 'earned' : 'locked'}">
+                            <i data-lucide="${earned ? 'check-circle-2' : 'lock'}"></i>
+                            <span>${earned ? 'Earned' : 'Locked'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        loadBadges();
     </script>
 </body>
 

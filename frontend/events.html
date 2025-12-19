@@ -268,10 +268,63 @@
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         }
 
+        // User registrations list
+        let userRegistrations = [];
+
+        // Check authentication before allowing access
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
         // Initialize events page
         async function initEventsPage() {
+            // SECURITY CHECK: Ensure user is logged in
+            if (!checkAuth()) {
+                return; // Stop initialization if not authenticated
+            }
+            
+            // Load user registrations first
+            userRegistrations = await getUserRegistrations();
+            
             await fetchEvents();
             setupEventListeners();
+        }
+
+        // Get user registrations (also defined in components.js but needed here too)
+        async function getUserRegistrations() {
+            let registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+            
+            try {
+                const token = localStorage.getItem('token');
+                
+                if (token) {
+                    // Use the correct endpoint
+                    const response = await fetch(`${API_BASE_URL}/events/user/registered`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const apiRegistrations = await response.json();
+                        apiRegistrations.forEach(reg => {
+                            const eventId = reg.eventId || reg.event_id || reg.id;
+                            if (eventId && !registrations.includes(eventId) && !registrations.includes(String(eventId))) {
+                                registrations.push(eventId);
+                            }
+                        });
+                        localStorage.setItem('userRegistrations', JSON.stringify(registrations));
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching registrations:', error);
+            }
+            
+            return registrations;
         }
 
         function setupEventListeners() {
@@ -317,78 +370,150 @@
             btn.disabled = true;
             btnText.textContent = 'Getting location...';
             
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        userLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-                        
-                        console.log('User location obtained:', userLocation);
-                        
-                        btnText.textContent = 'Location Enabled ✓';
-                        btn.style.background = 'rgba(255,255,255,0.4)';
-                        
-                        // Show radius controls
-                        document.getElementById('radiusControls').style.display = 'flex';
-                        
-                        // Update map
-                        if (map) {
-                            addUserMarker();
-                            updateRadiusCircle();
-                            updateMapMarkers();
-                            map.setView([userLocation.lat, userLocation.lng], 12);
-                        }
-                        
-                        // Update nearby alert
-                        updateNearbyAlert();
-                        
-                        // Update info text
-                        document.getElementById('userLocationText').innerHTML = `
-                            <i data-lucide="check-circle" style="width:14px;height:14px;color:#10b981;"></i>
-                            Location enabled • ${selectedRadius}km radius
-                        `;
-                        lucide.createIcons();
-                        
+            // Check if we can query the permission state
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+                    if (result.state === 'denied') {
+                        // Permission was previously denied - show instructions
+                        showLocationPermissionHelp();
+                        btnText.textContent = 'Permission Denied';
                         btn.disabled = false;
-                    },
-                    (error) => {
-                        console.error('Geolocation error:', error);
-                        let errorMsg = 'Unable to get location.';
-                        
-                        switch(error.code) {
-                            case error.PERMISSION_DENIED:
-                                errorMsg = 'Location permission denied. Please allow location access.';
-                                break;
-                            case error.POSITION_UNAVAILABLE:
-                                errorMsg = 'Location unavailable. Try again.';
-                                break;
-                            case error.TIMEOUT:
-                                errorMsg = 'Location request timed out. Try again.';
-                                break;
-                        }
-                        
-                        btnText.textContent = 'Location Failed';
-                        btn.disabled = false;
-                        
-                        setTimeout(() => {
-                            btnText.textContent = 'Use My Location';
-                        }, 2000);
-                        
-                        alert(errorMsg);
-                    },
-                    { 
-                        enableHighAccuracy: true, 
-                        timeout: 15000,
-                        maximumAge: 0 
+                        return;
                     }
-                );
+                    // Otherwise proceed with the request
+                    requestGeolocation(btn, btnText);
+                }).catch(function() {
+                    // Fallback if permissions API fails
+                    requestGeolocation(btn, btnText);
+                });
             } else {
+                // Permissions API not available, just request
+                requestGeolocation(btn, btnText);
+            }
+        }
+        
+        function showLocationPermissionHelp() {
+            const message = `📍 Location Permission Required
+            
+To enable location features:
+
+🖥️ Desktop Browsers:
+1. Click the lock/info icon in the address bar
+2. Find 'Location' in site permissions
+3. Change from 'Block' to 'Allow'
+4. Reload the page
+
+📱 Mobile:
+1. Go to your browser settings
+2. Find site permissions/settings
+3. Enable location for this site
+4. Return and try again
+
+After enabling, click "Use My Location" again.`;
+            
+            alert(message);
+        }
+        
+        function requestGeolocation(btn, btnText) {
+            if (!navigator.geolocation) {
                 alert('Geolocation is not supported by your browser');
                 btnText.textContent = 'Not Supported';
                 btn.disabled = false;
+                return;
             }
+            
+            // Detect if user is on desktop or mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Success callback
+            function onSuccess(position) {
+                userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                
+                console.log('User location obtained:', userLocation, 'Accuracy:', position.coords.accuracy, 'm');
+                
+                btnText.textContent = 'Location Enabled ✓';
+                btn.style.background = 'rgba(255,255,255,0.4)';
+                
+                // Show radius controls
+                document.getElementById('radiusControls').style.display = 'flex';
+                
+                // Update map
+                if (map) {
+                    addUserMarker();
+                    updateRadiusCircle();
+                    updateMapMarkers();
+                    map.setView([userLocation.lat, userLocation.lng], 12);
+                }
+                
+                // Update nearby alert
+                updateNearbyAlert();
+                
+                // Update info text
+                document.getElementById('userLocationText').innerHTML = `
+                    <i data-lucide="check-circle" style="width:14px;height:14px;color:#10b981;"></i>
+                    Location enabled • ${selectedRadius}km radius
+                `;
+                lucide.createIcons();
+                
+                btn.disabled = false;
+            }
+            
+            // Error callback for high accuracy (will retry with low accuracy on desktop)
+            function onHighAccuracyError(error) {
+                console.warn('High accuracy failed:', error.message);
+                
+                // On desktop, if high accuracy fails, try low accuracy (IP-based)
+                if (!isMobile) {
+                    console.log('Retrying with low accuracy for desktop...');
+                    btnText.textContent = 'Getting location...';
+                    
+                    navigator.geolocation.getCurrentPosition(
+                        onSuccess,
+                        onFinalError,
+                        { 
+                            enableHighAccuracy: false,  // Use IP-based location
+                            timeout: 10000,
+                            maximumAge: 300000  // Accept cached position up to 5 minutes old
+                        }
+                    );
+                } else {
+                    onFinalError(error);
+                }
+            }
+            
+            // Final error callback
+            function onFinalError(error) {
+                console.error('Geolocation error:', error);
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        showLocationPermissionHelp();
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert('Location unavailable. Please check your browser settings or try a different browser.');
+                        break;
+                    case error.TIMEOUT:
+                        alert('Location request timed out. Please try again.');
+                        break;
+                }
+                
+                btnText.textContent = 'Try Again';
+                btn.disabled = false;
+                
+                setTimeout(() => {
+                    btnText.textContent = 'Use My Location';
+                }, 3000);
+            }
+            
+            // Start with high accuracy for mobile, or try high then fallback for desktop
+            const options = isMobile 
+                ? { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                : { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }; // Shorter timeout for desktop
+            
+            navigator.geolocation.getCurrentPosition(onSuccess, onHighAccuracyError, options);
         }
 
         function addUserMarker() {
@@ -490,7 +615,7 @@
                     </div>
                 `;
             } else {
-                grid.innerHTML = filteredEvents.map(event => createEventCard(event)).join('');
+                grid.innerHTML = filteredEvents.map(event => createEventCard(event, userRegistrations)).join('');
             }
 
             lucide.createIcons();

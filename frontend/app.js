@@ -506,11 +506,25 @@ function updateUserCoins() {
 function updateUserAvatar() {
     const user = getCurrentUser();
     const avatarElements = document.querySelectorAll('.user-avatar');
-    if (user && user.name) {
-        avatarElements.forEach(el => {
+    
+    // Check for uploaded profile image first
+    const savedImage = localStorage.getItem('profileImage');
+    
+    avatarElements.forEach(el => {
+        if (savedImage) {
+            // Show profile picture
+            el.innerHTML = `<img src="${savedImage}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+        } else if (user && user.firstName) {
+            // Show first letter of name
+            el.textContent = user.firstName.charAt(0).toUpperCase();
+            el.style.fontSize = '';
+        } else if (user && user.name) {
             el.textContent = user.name.charAt(0).toUpperCase();
-        });
-    }
+            el.style.fontSize = '';
+        } else {
+            el.textContent = 'U';
+        }
+    });
 }
 
 // ===== Profile Page Functions =====
