@@ -1,5 +1,6 @@
 // API Base URL - Update this to your backend URL
-const API_BASE_URL = 'http://localhost:8081/api';
+// const API_BASE_URL = window.location.hostname === 'localhost' 
+const API_BASE_URL = 'https://actify-production.up.railway.app'
 
 // ===== Authentication Functions =====
 async function loginUser(email, password) {
