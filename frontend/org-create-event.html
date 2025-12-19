@@ -298,13 +298,26 @@
                     try {
                         initLocationPicker('locationPickerMap');
                         console.log('Location picker initialized successfully');
+                        
+                        // Additional fix for map rendering
+                        setTimeout(function() {
+                            if (locationPickerMap) {
+                                locationPickerMap.invalidateSize();
+                            }
+                        }, 300);
                     } catch (error) {
                         console.error('Error initializing location picker:', error);
                     }
                 } else {
                     console.error('Leaflet library not loaded!');
+                    // Retry after a delay
+                    setTimeout(function() {
+                        if (typeof L !== 'undefined') {
+                            initLocationPicker('locationPickerMap');
+                        }
+                    }, 500);
                 }
-            }, 100);
+            }, 200);
         });
 
         // Calculate duration automatically
