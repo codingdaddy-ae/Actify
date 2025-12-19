@@ -101,7 +101,7 @@
                     </div>
                     <h3 class="card-title-lg">Volunteer Points</h3>
                 </div>
-                <div class="coin-value-lg" id="userPoints">3,450</div>
+                <div class="coin-value-lg" id="userPoints"><span class="loading-placeholder">...</span></div>
                 <p class="card-subtitle">Keep volunteering to earn more</p>
             </div>
 
@@ -111,7 +111,7 @@
                     <i data-lucide="map-pin" class="header-icon"></i>
                     <h3 class="card-title">Events Completed</h3>
                 </div>
-                <div class="stat-value" id="eventsCompleted">18</div>
+                <div class="stat-value" id="eventsCompleted"><span class="loading-placeholder">...</span></div>
                 <p class="card-subtitle">Keep up the great work!</p>
             </div>
 
@@ -121,8 +121,8 @@
                     <i data-lucide="trending-up" class="header-icon accent"></i>
                     <h3 class="card-title">Hours Volunteered</h3>
                 </div>
-                <div class="stat-value" id="hoursVolunteered">72</div>
-                <p class="card-subtitle">2 weeks this month</p>
+                <div class="stat-value" id="hoursVolunteered"><span class="loading-placeholder">...</span></div>
+                <p class="card-subtitle">Your total contribution</p>
             </div>
         </div>
 
@@ -133,19 +133,8 @@
                 <h2 class="section-title-sm">Your Badges</h2>
             </div>
             <div id="badgesContainer" class="badges-grid">
-                <!-- Badges will be loaded here -->
-                <div class="badge-item">
-                    <div class="badge-icon">🏆</div>
-                    <p class="badge-name">First Steps</p>
-                </div>
-                <div class="badge-item">
-                    <div class="badge-icon">🦸</div>
-                    <p class="badge-name">Community Hero</p>
-                </div>
-                <div class="badge-item">
-                    <div class="badge-icon">🌱</div>
-                    <p class="badge-name">Green Guardian</p>
-                </div>
+                <!-- Badges will be loaded dynamically -->
+                <p class="loading-text" style="color: var(--text-muted); font-size: 0.9rem;">Loading badges...</p>
             </div>
         </div>
 
@@ -163,24 +152,8 @@
         <div class="section-block">
             <h2 class="section-title-sm">Upcoming Events</h2>
             <div id="upcomingEvents" class="events-list">
-                <!-- Events will be loaded here -->
-                <div class="event-list-item">
-                    <div class="event-info">
-                        <h4 class="event-name">Park Cleanup Drive</h4>
-                        <p class="event-details">
-                            <i data-lucide="calendar" class="icon-sm"></i>
-                            Nov 20, 2025 • 09:00 AM
-                        </p>
-                        <p class="event-details">
-                            <i data-lucide="map-pin" class="icon-sm"></i>
-                            Central Park
-                        </p>
-                    </div>
-                    <div class="event-reward">
-                        <i data-lucide="zap" class="icon-sm"></i>
-                        <span>150 coins</span>
-                    </div>
-                </div>
+                <!-- Events will be loaded dynamically -->
+                <p class="loading-text" style="color: var(--text-muted); font-size: 0.9rem; padding: 1rem;">Loading your registered events...</p>
             </div>
         </div>
     </main>

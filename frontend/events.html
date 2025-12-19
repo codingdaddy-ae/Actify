@@ -325,6 +325,8 @@
                             lng: position.coords.longitude
                         };
                         
+                        console.log('User location obtained:', userLocation);
+                        
                         btnText.textContent = 'Location Enabled ✓';
                         btn.style.background = 'rgba(255,255,255,0.4)';
                         
@@ -353,6 +355,20 @@
                     },
                     (error) => {
                         console.error('Geolocation error:', error);
+                        let errorMsg = 'Unable to get location.';
+                        
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = 'Location permission denied. Please allow location access.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = 'Location unavailable. Try again.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = 'Location request timed out. Try again.';
+                                break;
+                        }
+                        
                         btnText.textContent = 'Location Failed';
                         btn.disabled = false;
                         
@@ -360,9 +376,13 @@
                             btnText.textContent = 'Use My Location';
                         }, 2000);
                         
-                        alert('Unable to get your location. Please enable location services and try again.');
+                        alert(errorMsg);
                     },
-                    { enableHighAccuracy: true, timeout: 10000 }
+                    { 
+                        enableHighAccuracy: true, 
+                        timeout: 15000,
+                        maximumAge: 0 
+                    }
                 );
             } else {
                 alert('Geolocation is not supported by your browser');
@@ -550,18 +570,23 @@
                 const marker = L.marker(event.coordinates, { icon })
                     .addTo(map)
                     .bindPopup(`
-                        <div class="event-popup">
-                            <h4>${event.title}</h4>
+                        <div class="event-popup" style="min-width: 220px;">
+                            <h4 style="margin-bottom: 0.5rem;">${event.title}</h4>
                             <div class="event-popup-meta">📅 ${event.date}</div>
                             <div class="event-popup-meta">📍 ${event.location}</div>
                             <div class="event-popup-meta">🏷️ ${event.cause}</div>
                             ${distanceText}
                             <div class="event-popup-reward">🪙 ${event.coinsReward} coins</div>
-                            <button class="event-popup-btn" onclick="window.location.href='event-details.html?id=${event.id}'">
-                                View Details
-                            </button>
+                            <div class="event-popup-description" style="font-size: 0.8rem; color: #64748b; margin: 0.5rem 0; line-height: 1.4;">
+                                ${event.description || 'Join us for this exciting volunteer opportunity!'}
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="event-popup-btn" style="flex: 1;" onclick="handleEventRegistration(${event.id})">
+                                    Register
+                                </button>
+                            </div>
                         </div>
-                    `);
+                    `, { maxWidth: 280 });
                 
                 eventMarkers.push(marker);
             });

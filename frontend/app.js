@@ -295,22 +295,23 @@ async function loadDashboardData() {
                 userNameEl.textContent = firstName;
             }
             
-            // Use mock data if API fails
+            // Use actual user data from localStorage (zeros if not available)
             await updateDashboardUI({
-                volunteerPoints: user.volunteerPoints || 2850,
-                eventsCompleted: user.eventsCompleted || 12,
-                volunteerHours: user.volunteerHours || 48,
-                badges: ["First Steps", "Community Hero", "Green Guardian"]
+                volunteerPoints: user.volunteerPoints || 0,
+                eventsCompleted: user.eventsCompleted || 0,
+                volunteerHours: user.volunteerHours || 0,
+                badges: []
             });
         }
     } catch (error) {
         console.error('Error loading dashboard:', error);
-        // Use mock data
+        // Show zeros if API fails - no mock data
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
         await updateDashboardUI({
-            volunteerPoints: 3450,
-            eventsCompleted: 18,
-            hoursVolunteered: 72,
-            badges: ["First Steps", "Community Hero", "Green Guardian"]
+            volunteerPoints: user.volunteerPoints || 0,
+            eventsCompleted: user.eventsCompleted || 0,
+            volunteerHours: user.volunteerHours || 0,
+            badges: []
         });
     }
 }
@@ -352,6 +353,16 @@ async function updateDashboardUI(data) {
                     <p class="badge-name">${badge}</p>
                 </div>
             `).join('');
+        }
+    } else {
+        // Show no badges message
+        const badgesContainer = document.getElementById('badgesContainer');
+        if (badgesContainer) {
+            badgesContainer.innerHTML = `
+                <p style="color: var(--text-muted); font-size: 0.9rem; grid-column: 1/-1;">
+                    No badges earned yet. Start volunteering to earn badges!
+                </p>
+            `;
         }
     }
     
