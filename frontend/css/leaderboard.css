@@ -48,6 +48,14 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Profile image in avatar */
+img.user-avatar-sm {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .leaderboard-row:hover .user-avatar-sm {
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);

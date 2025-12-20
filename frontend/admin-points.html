@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Points Audit | Actify Admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Points Audit Specific Styles */
+        .audit-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .audit-stat {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .audit-stat .stat-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            margin: 0 auto 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .audit-stat .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .audit-stat .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .audit-stat.total .stat-icon { background: #dbeafe; color: #3b82f6; }
+        .audit-stat.total .stat-value { color: #3b82f6; }
+
+        .audit-stat.pending .stat-icon { background: #fef3c7; color: #f59e0b; }
+        .audit-stat.pending .stat-value { color: #f59e0b; }
+
+        .audit-stat.approved .stat-icon { background: #d1fae5; color: #10b981; }
+        .audit-stat.approved .stat-value { color: #10b981; }
+
+        .audit-stat.revoked .stat-icon { background: #fee2e2; color: #ef4444; }
+        .audit-stat.revoked .stat-value { color: #ef4444; }
+
+        /* Filters */
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+            min-width: 150px;
+        }
+
+        /* Points Table */
+        .points-table {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .points-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .points-table th,
+        .points-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .points-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .points-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .points-table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Volunteer Info Cell */
+        .volunteer-cell {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .volunteer-cell .name {
+            font-weight: 600;
+        }
+
+        .volunteer-cell .email {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* Event Info Cell */
+        .event-cell {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-cell .title {
+            font-weight: 500;
+        }
+
+        .event-cell .date {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* Status Badge */
+        .review-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .review-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .review-status.approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .review-status.adjusted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .review-status.revoked {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Points Value */
+        .points-value {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .points-value.positive { color: #10b981; }
+        .points-value.zero { color: #6b7280; }
+        .points-value.negative { color: #ef4444; }
+
+        /* Attendance Status */
+        .attendance-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .attendance-status.attended {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .attendance-status.partial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .attendance-status.no_show {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .action-btn.revoke:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 1.5rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Organization Summary */
+        .org-summary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .org-summary-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+        }
+
+        .org-summary-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .org-summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .org-summary-item .name {
+            font-weight: 500;
+        }
+
+        .org-summary-item .points {
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        @media (max-width: 768px) {
+            .audit-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .points-table {
+                overflow-x: auto;
+            }
+
+            .points-table table {
+                min-width: 800px;
+            }
+        }
+    </style>
+</head>
+<body style="background: #f9fafb; min-height: 100vh;">
+    <!-- Admin Navigation -->
+    <nav class="nav-admin">
+        <a href="index.html" class="nav-admin-brand">
+            <div class="brand-icon">A</div>
+            <span>Actify</span>
+            <span class="admin-badge">ADMIN</span>
+        </a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="admin.html" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="arrow-left" style="width: 1rem; height: 1rem;"></i>
+                Back to Dashboard
+            </a>
+            <button onclick="logoutAdmin()" class="btn btn-sm" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #ef4444; color: white; border: none; cursor: pointer;">
+                <i data-lucide="log-out" style="width: 1rem; height: 1rem;"></i>
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1 class="admin-title">Points Audit</h1>
+                <p class="admin-subtitle">Review and manage volunteer point distributions</p>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="audit-stats">
+            <div class="audit-stat total">
+                <div class="stat-icon">
+                    <i data-lucide="coins" style="width: 1.5rem; height: 1.5rem;"></i>
+                </div>
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="stat-label">Total Points Distributed</div>
+            </div>
+            <div class="audit-stat pending">
+                <div class="stat-icon">
+                    <i data-lucide="clock" style="width: 1.5rem; height: 1.5rem;"></i>
+                </div>
+                <div class="stat-value" id="pendingReviews">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="audit-stat approved">
+                <div class="stat-icon">
+                    <i data-lucide="check-circle" style="width: 1.5rem; height: 1.5rem;"></i>
+                </div>
+                <div class="stat-value" id="approvedCount">0</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="audit-stat revoked">
+                <div class="stat-icon">
+                    <i data-lucide="x-circle" style="width: 1.5rem; height: 1.5rem;"></i>
+                </div>
+                <div class="stat-value" id="revokedCount">0</div>
+                <div class="stat-label">Revoked</div>
+            </div>
+        </div>
+
+        <!-- Organization Summary -->
+        <div class="org-summary">
+            <div class="org-summary-header">
+                <i data-lucide="building-2" style="width: 1rem; height: 1rem; display: inline; vertical-align: middle; margin-right: 0.5rem;"></i>
+                Points by Organization
+            </div>
+            <div class="org-summary-list" id="orgSummary">
+                <div class="empty-state">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-row">
+            <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+                <option value="all">All Status</option>
+                <option value="pending">Pending Review</option>
+                <option value="approved">Approved</option>
+                <option value="adjusted">Adjusted</option>
+                <option value="revoked">Revoked</option>
+            </select>
+            <select class="filter-select" id="orgFilter" onchange="applyFilters()">
+                <option value="all">All Organizations</option>
+            </select>
+            <select class="filter-select" id="sortFilter" onchange="applyFilters()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highest">Highest Points</option>
+                <option value="lowest">Lowest Points</option>
+            </select>
+        </div>
+
+        <!-- Points Table -->
+        <div class="points-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Volunteer</th>
+                        <th>Event</th>
+                        <th>Organization</th>
+                        <th>Attendance</th>
+                        <th>Points</th>
+                        <th>Awarded On</th>
+                        <th>Review Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="pointsTableBody">
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">Loading point distributions...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal-overlay hidden" id="reviewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Review Point Distribution</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i data-lucide="x" style="width: 1.25rem; height: 1.25rem;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="reviewDetails">
+                    <p><strong>Volunteer:</strong> <span id="modalVolunteer"></span></p>
+                    <p><strong>Event:</strong> <span id="modalEvent"></span></p>
+                    <p><strong>Current Points:</strong> <span id="modalPoints"></span></p>
+                </div>
+                <div class="form-group">
+                    <label>Action</label>
+                    <select id="reviewAction" onchange="toggleAdjustFields()">
+                        <option value="approve">Approve</option>
+                        <option value="adjust">Adjust Points</option>
+                        <option value="revoke">Revoke Points</option>
+                    </select>
+                </div>
+                <div class="form-group" id="adjustPointsGroup" style="display: none;">
+                    <label>Adjusted Points</label>
+                    <input type="number" id="adjustedPoints" min="0" placeholder="Enter new point value">
+                </div>
+                <div class="form-group">
+                    <label>Admin Notes</label>
+                    <textarea id="adminNotes" placeholder="Add notes about this review..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <i data-lucide="check-circle" style="width: 1.25rem; height: 1.25rem;"></i>
+        <span id="toastMessage">Action completed</span>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+
+        let allDistributions = [];
+        let organizations = [];
+        let currentReviewId = null;
+
+        // Check admin authentication
+        async function checkAdminAuth() {
+            const adminToken = localStorage.getItem('adminToken');
+            const admin = JSON.parse(localStorage.getItem('admin') || 'null');
+            
+            if (!adminToken || !admin) {
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    localStorage.removeItem('adminToken');
+                    localStorage.removeItem('admin');
+                    window.location.href = 'admin-login.html';
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                return false;
+            }
+        }
+
+        // Load all data
+        async function loadData() {
+            if (!await checkAdminAuth()) return;
+            
+            const adminToken = localStorage.getItem('adminToken');
+            
+            try {
+                // Load point distributions
+                const distribResponse = await fetch(`${API_BASE_URL}/admin/points/distributions`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                if (distribResponse.ok) {
+                    allDistributions = await distribResponse.json();
+                } else {
+                    allDistributions = getSampleDistributions();
+                }
+                
+                // Load organization summary
+                const orgResponse = await fetch(`${API_BASE_URL}/admin/points/by-organization`, {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                if (orgResponse.ok) {
+                    organizations = await orgResponse.json();
+                } else {
+                    organizations = getSampleOrgSummary();
+                }
+                
+                updateStats();
+                renderOrgSummary();
+                populateOrgFilter();
+                renderTable();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                allDistributions = getSampleDistributions();
+                organizations = getSampleOrgSummary();
+                updateStats();
+                renderOrgSummary();
+                populateOrgFilter();
+                renderTable();
+            }
+        }
+
+        // Sample data for demo
+        function getSampleDistributions() {
+            return [
+                {
+                    id: 1,
+                    volunteerId: 1,
+                    volunteerName: "John Doe",
+                    volunteerEmail: "john@example.com",
+                    eventId: 1,
+                    eventTitle: "Park Cleanup Drive",
+                    eventDate: "2025-01-15",
+                    organizerName: "Green Earth Foundation",
+                    attendanceStatus: "attended",
+                    pointsAwarded: 150,
+                    pointsAwardedAt: "2025-01-15T14:30:00",
+                    adminReviewed: false,
+                    adminNotes: null
+                },
+                {
+                    id: 2,
+                    volunteerId: 2,
+                    volunteerName: "Jane Smith",
+                    volunteerEmail: "jane@example.com",
+                    eventId: 1,
+                    eventTitle: "Park Cleanup Drive",
+                    eventDate: "2025-01-15",
+                    organizerName: "Green Earth Foundation",
+                    attendanceStatus: "partial",
+                    pointsAwarded: 75,
+                    pointsAwardedAt: "2025-01-15T14:30:00",
+                    adminReviewed: true,
+                    adminNotes: "Approved - valid partial attendance"
+                },
+                {
+                    id: 3,
+                    volunteerId: 3,
+                    volunteerName: "Bob Wilson",
+                    volunteerEmail: "bob@example.com",
+                    eventId: 2,
+                    eventTitle: "Food Bank Sorting",
+                    eventDate: "2025-01-10",
+                    organizerName: "City Food Bank",
+                    attendanceStatus: "attended",
+                    pointsAwarded: 125,
+                    pointsAwardedAt: "2025-01-10T15:00:00",
+                    adminReviewed: false,
+                    adminNotes: null
+                }
+            ];
+        }
+
+        function getSampleOrgSummary() {
+            return [
+                { orgId: 1, orgName: "Green Earth Foundation", totalPoints: 225, distributionCount: 2 },
+                { orgId: 2, orgName: "City Food Bank", totalPoints: 125, distributionCount: 1 }
+            ];
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = allDistributions.reduce((sum, d) => sum + (d.pointsAwarded || 0), 0);
+            const pending = allDistributions.filter(d => !d.adminReviewed).length;
+            const approved = allDistributions.filter(d => d.adminReviewed && d.pointsAwarded > 0).length;
+            const revoked = allDistributions.filter(d => d.attendanceStatus === 'revoked').length;
+            
+            document.getElementById('totalPoints').textContent = total.toLocaleString();
+            document.getElementById('pendingReviews').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('revokedCount').textContent = revoked;
+        }
+
+        // Render organization summary
+        function renderOrgSummary() {
+            const container = document.getElementById('orgSummary');
+            
+            if (organizations.length === 0) {
+                container.innerHTML = '<div class="empty-state">No organizations found</div>';
+                return;
+            }
+            
+            container.innerHTML = organizations.map(org => `
+                <div class="org-summary-item">
+                    <span class="name">${org.orgName}</span>
+                    <span class="points">${org.totalPoints.toLocaleString()} VP</span>
+                </div>
+            `).join('');
+        }
+
+        // Populate organization filter
+        function populateOrgFilter() {
+            const filter = document.getElementById('orgFilter');
+            organizations.forEach(org => {
+                const option = document.createElement('option');
+                option.value = org.orgId;
+                option.textContent = org.orgName;
+                filter.appendChild(option);
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            renderTable();
+        }
+
+        // Render table
+        function renderTable() {
+            const container = document.getElementById('pointsTableBody');
+            const statusFilter = document.getElementById('statusFilter').value;
+            const orgFilter = document.getElementById('orgFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            let filtered = [...allDistributions];
+            
+            // Apply status filter
+            if (statusFilter !== 'all') {
+                if (statusFilter === 'pending') {
+                    filtered = filtered.filter(d => !d.adminReviewed);
+                } else if (statusFilter === 'approved') {
+                    filtered = filtered.filter(d => d.adminReviewed && d.pointsAwarded > 0);
+                } else if (statusFilter === 'revoked') {
+                    filtered = filtered.filter(d => d.attendanceStatus === 'revoked');
+                }
+            }
+            
+            // Apply org filter
+            if (orgFilter !== 'all') {
+                filtered = filtered.filter(d => d.awardedByOrgId == orgFilter || d.organizerName === organizations.find(o => o.orgId == orgFilter)?.orgName);
+            }
+            
+            // Apply sort
+            switch (sortFilter) {
+                case 'newest':
+                    filtered.sort((a, b) => new Date(b.pointsAwardedAt) - new Date(a.pointsAwardedAt));
+                    break;
+                case 'oldest':
+                    filtered.sort((a, b) => new Date(a.pointsAwardedAt) - new Date(b.pointsAwardedAt));
+                    break;
+                case 'highest':
+                    filtered.sort((a, b) => b.pointsAwarded - a.pointsAwarded);
+                    break;
+                case 'lowest':
+                    filtered.sort((a, b) => a.pointsAwarded - b.pointsAwarded);
+                    break;
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i data-lucide="search-x" style="width: 3rem; height: 3rem; margin-bottom: 1rem;"></i>
+                                <p>No point distributions found</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            container.innerHTML = filtered.map(d => `
+                <tr>
+                    <td>
+                        <div class="volunteer-cell">
+                            <span class="name">${d.volunteerName || 'Unknown'}</span>
+                            <span class="email">${d.volunteerEmail || ''}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="event-cell">
+                            <span class="title">${d.eventTitle || 'Unknown Event'}</span>
+                            <span class="date">${d.eventDate ? new Date(d.eventDate).toLocaleDateString() : ''}</span>
+                        </div>
+                    </td>
+                    <td>${d.organizerName || 'Unknown'}</td>
+                    <td>
+                        <span class="attendance-status ${d.attendanceStatus}">
+                            ${getAttendanceIcon(d.attendanceStatus)}
+                            ${formatAttendanceStatus(d.attendanceStatus)}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="points-value ${d.pointsAwarded > 0 ? 'positive' : d.pointsAwarded === 0 ? 'zero' : 'negative'}">
+                            ${d.pointsAwarded > 0 ? '+' : ''}${d.pointsAwarded}
+                        </span>
+                    </td>
+                    <td>${d.pointsAwardedAt ? new Date(d.pointsAwardedAt).toLocaleString() : 'N/A'}</td>
+                    <td>
+                        <span class="review-status ${getReviewStatus(d)}">
+                            ${getReviewStatusIcon(d)}
+                            ${formatReviewStatus(d)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="openReviewModal(${d.id})" title="Review">
+                                <i data-lucide="edit-2" style="width: 1rem; height: 1rem;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+
+        // Helper functions
+        function getAttendanceIcon(status) {
+            const icons = {
+                attended: '<i data-lucide="check-circle" style="width: 0.75rem; height: 0.75rem;"></i>',
+                partial: '<i data-lucide="clock" style="width: 0.75rem; height: 0.75rem;"></i>',
+                no_show: '<i data-lucide="x-circle" style="width: 0.75rem; height: 0.75rem;"></i>',
+                revoked: '<i data-lucide="ban" style="width: 0.75rem; height: 0.75rem;"></i>'
+            };
+            return icons[status] || '';
+        }
+
+        function formatAttendanceStatus(status) {
+            return status ? status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unknown';
+        }
+
+        function getReviewStatus(d) {
+            if (d.attendanceStatus === 'revoked') return 'revoked';
+            if (!d.adminReviewed) return 'pending';
+            return 'approved';
+        }
+
+        function getReviewStatusIcon(d) {
+            const status = getReviewStatus(d);
+            const icons = {
+                pending: '<i data-lucide="clock" style="width: 0.75rem; height: 0.75rem;"></i>',
+                approved: '<i data-lucide="check" style="width: 0.75rem; height: 0.75rem;"></i>',
+                adjusted: '<i data-lucide="edit-2" style="width: 0.75rem; height: 0.75rem;"></i>',
+                revoked: '<i data-lucide="x" style="width: 0.75rem; height: 0.75rem;"></i>'
+            };
+            return icons[status] || '';
+        }
+
+        function formatReviewStatus(d) {
+            const status = getReviewStatus(d);
+            return status.charAt(0).toUpperCase() + status.slice(1);
+        }
+
+        // Modal functions
+        function openReviewModal(distributionId) {
+            const distribution = allDistributions.find(d => d.id === distributionId);
+            if (!distribution) return;
+            
+            currentReviewId = distributionId;
+            
+            document.getElementById('modalVolunteer').textContent = distribution.volunteerName;
+            document.getElementById('modalEvent').textContent = distribution.eventTitle;
+            document.getElementById('modalPoints').textContent = `${distribution.pointsAwarded} VP`;
+            document.getElementById('adjustedPoints').value = distribution.pointsAwarded;
+            document.getElementById('adminNotes').value = distribution.adminNotes || '';
+            document.getElementById('reviewAction').value = 'approve';
+            toggleAdjustFields();
+            
+            document.getElementById('reviewModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+            currentReviewId = null;
+        }
+
+        function toggleAdjustFields() {
+            const action = document.getElementById('reviewAction').value;
+            const adjustGroup = document.getElementById('adjustPointsGroup');
+            adjustGroup.style.display = action === 'adjust' ? 'block' : 'none';
+        }
+
+        // Submit review
+        async function submitReview() {
+            if (!currentReviewId) return;
+            
+            const action = document.getElementById('reviewAction').value;
+            const notes = document.getElementById('adminNotes').value;
+            const adjustedPoints = parseInt(document.getElementById('adjustedPoints').value) || 0;
+            
+            const adminToken = localStorage.getItem('adminToken');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/points/distributions/${currentReviewId}/review`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: action,
+                        adjustedPoints: action === 'adjust' ? adjustedPoints : undefined,
+                        notes: notes
+                    })
+                });
+                
+                if (response.ok) {
+                    showToast('Review submitted successfully', 'success');
+                    closeModal();
+                    loadData();
+                } else {
+                    const error = await response.json();
+                    showToast(error.error || 'Failed to submit review', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Update locally for demo
+                const dist = allDistributions.find(d => d.id === currentReviewId);
+                if (dist) {
+                    dist.adminReviewed = true;
+                    dist.adminNotes = notes;
+                    if (action === 'adjust') {
+                        dist.pointsAwarded = adjustedPoints;
+                    } else if (action === 'revoke') {
+                        dist.attendanceStatus = 'revoked';
+                        dist.pointsAwarded = 0;
+                    }
+                }
+                
+                showToast('Review submitted (demo mode)', 'success');
+                closeModal();
+                updateStats();
+                renderTable();
+            }
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

@@ -4,10 +4,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Volunteers | Actify Org</title>
+    <title>Mark Attendance | Actify Org</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/org.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Attendance Page Specific Styles */
+        .attendance-header {
+            margin-bottom: 2rem;
+        }
+
+        .attendance-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .attendance-header .event-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .attendance-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .attendance-stat {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .attendance-stat .stat-icon {
+            width: 2rem;
+            height: 2rem;
+            margin: 0 auto 0.5rem;
+        }
+
+        .attendance-stat .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .attendance-stat .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .attendance-stat.attended { border-top: 3px solid #10b981; }
+        .attendance-stat.partial { border-top: 3px solid #f59e0b; }
+        .attendance-stat.no-show { border-top: 3px solid #ef4444; }
+        .attendance-stat.pending { border-top: 3px solid #6b7280; }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-actions .btn {
+            font-size: 0.875rem;
+        }
+
+        /* Volunteer List */
+        .volunteer-list {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .volunteer-list-header {
+            padding: 1rem 1.25rem;
+            background: var(--slate-50);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .volunteer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .volunteer-item:last-child {
+            border-bottom: none;
+        }
+
+        .volunteer-item.awarded {
+            background: var(--slate-50);
+            opacity: 0.8;
+        }
+
+        .volunteer-info {
+            flex: 1;
+        }
+
+        .volunteer-info .name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .volunteer-info .email {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .volunteer-info .awarded-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: #10b981;
+            margin-top: 0.25rem;
+        }
+
+        /* Attendance Buttons */
+        .attendance-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .attendance-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .attendance-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .attendance-btn.selected.attended {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .attendance-btn.selected.partial {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: white;
+        }
+
+        .attendance-btn.selected.no-show {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .attendance-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Points Display */
+        .points-display {
+            text-align: right;
+            min-width: 80px;
+        }
+
+        .points-display .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .points-display .value {
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .points-display .value.positive { color: #10b981; }
+        .points-display .value.zero { color: #ef4444; }
+
+        /* Status display for already awarded */
+        .status-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+
+        /* Submit Section */
+        .submit-section {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: var(--slate-50);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .info-box h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-box li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .attendance-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .volunteer-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .attendance-buttons {
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -51,64 +339,108 @@
 
     <!-- Main Content -->
     <main class="org-main">
+        <!-- Back Link -->
+        <a href="org-events.html" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary); text-decoration: none; margin-bottom: 1.5rem;">
+            <i data-lucide="arrow-left" style="width: 1rem; height: 1rem;"></i>
+            Back to Events
+        </a>
+
         <!-- Header -->
-        <div class="org-header">
-            <div>
-                <h1>Volunteers</h1>
-                <p>View volunteers who have participated in your events</p>
-            </div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <!-- Search -->
-                <div style="position: relative;">
-                    <i data-lucide="search" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 1rem; height: 1rem; color: var(--text-muted);"></i>
-                    <input type="text" id="searchInput" class="form-input" style="padding-left: 2.5rem; width: 250px;" 
-                           placeholder="Search volunteers..." oninput="searchVolunteers()" />
-                </div>
-                <!-- Filter -->
-                <select id="eventFilter" class="form-input" style="width: auto;" onchange="filterVolunteers()">
-                    <option value="all">All Events</option>
-                </select>
+        <div class="attendance-header">
+            <h1>Mark Attendance</h1>
+            <div class="event-info">
+                <span id="eventTitle">Loading...</span> • 
+                <span id="eventDate"></span> • 
+                Points per volunteer: <strong id="eventPoints">0</strong>
             </div>
         </div>
+
+        <!-- Alerts -->
+        <div id="alertContainer"></div>
 
         <!-- Stats -->
-        <div class="org-stats-grid" style="margin-bottom: 2rem;">
-            <div class="org-stat-card">
-                <div class="stat-label">
-                    <i data-lucide="users"></i>
-                    Total Volunteers
-                </div>
-                <div class="stat-value" id="totalVolunteers">0</div>
+        <div class="attendance-stats">
+            <div class="attendance-stat pending">
+                <i data-lucide="users" class="stat-icon" style="color: #6b7280;"></i>
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total Registered</div>
             </div>
-            <div class="org-stat-card">
-                <div class="stat-label">
-                    <i data-lucide="user-check"></i>
-                    Active Volunteers
-                </div>
-                <div class="stat-value" id="activeVolunteers">0</div>
+            <div class="attendance-stat attended">
+                <i data-lucide="check-circle" class="stat-icon" style="color: #10b981;"></i>
+                <div class="stat-value" id="attendedCount">0</div>
+                <div class="stat-label">Attended</div>
             </div>
-            <div class="org-stat-card">
-                <div class="stat-label">
-                    <i data-lucide="star"></i>
-                    Top Performer
-                </div>
-                <div class="stat-value" id="topVolunteer" style="font-size: 1.25rem;">-</div>
+            <div class="attendance-stat partial">
+                <i data-lucide="clock" class="stat-icon" style="color: #f59e0b;"></i>
+                <div class="stat-value" id="partialCount">0</div>
+                <div class="stat-label">Partial</div>
             </div>
-            <div class="org-stat-card">
-                <div class="stat-label">
-                    <i data-lucide="clock"></i>
-                    Total Hours
-                </div>
-                <div class="stat-value" id="totalHours">0</div>
+            <div class="attendance-stat no-show">
+                <i data-lucide="x-circle" class="stat-icon" style="color: #ef4444;"></i>
+                <div class="stat-value" id="noShowCount">0</div>
+                <div class="stat-label">No Show</div>
             </div>
         </div>
 
-        <!-- Volunteers List -->
-        <div class="org-events-section">
-            <h2>All Volunteers</h2>
-            <div id="volunteersList" class="volunteers-grid">
-                <!-- Volunteers will be loaded here -->
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="btn btn-outline btn-sm" onclick="markAllAs('attended')">
+                <i data-lucide="check-circle" style="width: 1rem; height: 1rem; margin-right: 0.25rem;"></i>
+                Mark All Attended
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="markAllAs('no_show')">
+                <i data-lucide="x-circle" style="width: 1rem; height: 1rem; margin-right: 0.25rem;"></i>
+                Mark All No-Show
+            </button>
+        </div>
+
+        <!-- Volunteer List -->
+        <div class="volunteer-list">
+            <div class="volunteer-list-header">
+                Registered Volunteers (<span id="volunteerCount">0</span>)
             </div>
+            <div id="volunteersList">
+                <div class="loading-spinner">Loading volunteers...</div>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <div id="pendingWarning" style="display: none;">
+                <span style="color: #f59e0b;">
+                    <i data-lucide="alert-triangle" style="width: 1rem; height: 1rem;"></i>
+                    <span id="pendingCount">0</span> volunteer(s) still pending
+                </span>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="org-events.html">
+                    <button class="btn btn-outline">Cancel</button>
+                </a>
+                <button class="btn btn-primary" onclick="submitAttendance()" id="submitBtn">
+                    <i data-lucide="save" style="width: 1rem; height: 1rem; margin-right: 0.5rem;"></i>
+                    Submit Attendance & Award Points
+                </button>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>How Points Are Distributed</h3>
+            <ul>
+                <li>
+                    <i data-lucide="check-circle" style="width: 1rem; height: 1rem; color: #10b981;"></i>
+                    <strong>Attended:</strong> Full points (<span id="fullPoints">0</span> VP)
+                </li>
+                <li>
+                    <i data-lucide="clock" style="width: 1rem; height: 1rem; color: #f59e0b;"></i>
+                    <strong>Partial:</strong> Half points (<span id="halfPoints">0</span> VP) - for volunteers who left early
+                </li>
+                <li>
+                    <i data-lucide="x-circle" style="width: 1rem; height: 1rem; color: #ef4444;"></i>
+                    <strong>No-Show:</strong> No points (0 VP)
+                </li>
+            </ul>
+            <p>Points are automatically added to volunteer accounts. An admin may review and adjust if needed.</p>
         </div>
     </main>
 
@@ -116,7 +448,12 @@
     <script>
         lucide.createIcons();
 
-        let allVolunteers = [];
+        // Get event ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+
+        let eventData = null;
+        let attendance = {}; // { odometrId: 'attended' | 'partial' | 'no_show' | 'pending' }
 
         // Check organization authentication
         function checkOrgAuth() {
@@ -126,123 +463,289 @@
                 window.location.href = 'login.html';
                 return false;
             }
-            return true;
-        }
-
-        // Load volunteers from API
-        async function loadVolunteers() {
-            if (!checkOrgAuth()) return;
-
-            const org = JSON.parse(localStorage.getItem('organization'));
             
             // Update avatar
             const avatarEl = document.getElementById('orgAvatar');
             if (avatarEl && org.name) {
                 avatarEl.textContent = org.name.charAt(0).toUpperCase();
             }
+            return true;
+        }
+
+        // Load event volunteers
+        async function loadEventData() {
+            if (!checkOrgAuth()) return;
+            if (!eventId) {
+                showAlert('No event ID provided', 'error');
+                return;
+            }
 
             try {
-                const response = await fetchOrgWithAuth(`${API_BASE_URL}/org/volunteers`);
+                const response = await fetchOrgWithAuth(`${API_BASE_URL}/org/events/${eventId}/volunteers`);
+                
                 if (response.ok) {
-                    const data = await response.json();
-                    allVolunteers = data.volunteers || [];
-                    console.log('Loaded volunteers:', allVolunteers);
+                    eventData = await response.json();
+                    
+                    // Update header
+                    document.getElementById('eventTitle').textContent = eventData.eventTitle;
+                    document.getElementById('eventDate').textContent = eventData.eventDate ? new Date(eventData.eventDate).toLocaleDateString() : 'N/A';
+                    document.getElementById('eventPoints').textContent = eventData.pointsReward || 0;
+                    document.getElementById('fullPoints').textContent = eventData.pointsReward || 0;
+                    document.getElementById('halfPoints').textContent = Math.floor((eventData.pointsReward || 0) / 2);
+                    
+                    // Initialize attendance from data
+                    eventData.volunteers.forEach(v => {
+                        attendance[v.id] = v.attendanceStatus || 'pending';
+                    });
+                    
+                    renderVolunteers();
+                    updateStats();
+                } else {
+                    showAlert('Failed to load event data', 'error');
                 }
             } catch (error) {
-                console.error('Error loading volunteers:', error);
-                allVolunteers = [];
-            }
-
-            updateStats();
-            renderVolunteers(allVolunteers);
-        }
-
-        function updateStats() {
-            document.getElementById('totalVolunteers').textContent = allVolunteers.length;
-            document.getElementById('activeVolunteers').textContent = allVolunteers.filter(v => (v.eventsCompleted || 0) > 0).length;
-            
-            const totalHours = allVolunteers.reduce((sum, v) => sum + (v.volunteerHours || 0), 0);
-            document.getElementById('totalHours').textContent = totalHours;
-
-            // Find top performer
-            const topPerformer = allVolunteers.reduce((top, v) => (v.volunteerPoints || 0) > (top?.volunteerPoints || 0) ? v : top, null);
-            if (topPerformer && topPerformer.name) {
-                document.getElementById('topVolunteer').textContent = topPerformer.name.split(' ')[0];
-            } else {
-                document.getElementById('topVolunteer').textContent = '-';
+                console.error('Error:', error);
+                showAlert('Error connecting to server', 'error');
             }
         }
 
-        function searchVolunteers() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allVolunteers.filter(v => 
-                (v.name || '').toLowerCase().includes(query) || 
-                (v.email || '').toLowerCase().includes(query)
-            );
-            renderVolunteers(filtered);
-        }
-
-        function filterVolunteers() {
-            const event = document.getElementById('eventFilter').value;
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            
-            let filtered = allVolunteers;
-            if (query) {
-                filtered = filtered.filter(v => 
-                    (v.name || '').toLowerCase().includes(query) || 
-                    (v.email || '').toLowerCase().includes(query)
-                );
-            }
-            renderVolunteers(filtered);
-        }
-
-        function renderVolunteers(volunteers) {
+        // Render volunteers list
+        function renderVolunteers() {
             const container = document.getElementById('volunteersList');
+            const volunteers = eventData.volunteers;
             
-            if (!volunteers || volunteers.length === 0) {
+            document.getElementById('volunteerCount').textContent = volunteers.length;
+            
+            if (volunteers.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--text-muted); grid-column: 1/-1;">
+                    <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
                         <i data-lucide="users" style="width: 3rem; height: 3rem; margin-bottom: 1rem;"></i>
-                        <h3 style="margin-bottom: 0.5rem;">No Volunteers Yet</h3>
-                        <p>When volunteers register for your events, they will appear here.</p>
-                        <p style="margin-top: 1rem; font-size: 0.875rem;">Create an event and share it to start building your volunteer community!</p>
+                        <p>No volunteers registered for this event</p>
                     </div>
                 `;
                 lucide.createIcons();
                 return;
             }
 
-            container.innerHTML = volunteers.map(volunteer => `
-                <div class="volunteer-card">
-                    <div class="volunteer-avatar">${(volunteer.name || 'U').charAt(0).toUpperCase()}</div>
-                    <div class="volunteer-info">
-                        <h4>${volunteer.name || 'Unknown'}</h4>
-                        <p>${volunteer.email || 'No email'}</p>
-                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.75rem;">
-                            <span><strong>${volunteer.eventsCompleted || 0}</strong> events</span>
-                            <span><strong>${volunteer.volunteerPoints || 0}</strong> VP</span>
-                            <span>${volunteer.city || 'Unknown location'}</span>
+            container.innerHTML = volunteers.map(volunteer => {
+                const isAwarded = volunteer.pointsAwarded && volunteer.pointsAwarded > 0;
+                const currentStatus = attendance[volunteer.id] || 'pending';
+                const estimatedPoints = getPointsForStatus(currentStatus);
+                
+                return `
+                    <div class="volunteer-item ${isAwarded ? 'awarded' : ''}">
+                        <div class="volunteer-info">
+                            <div class="name">${volunteer.name}</div>
+                            <div class="email">${volunteer.email}</div>
+                            ${isAwarded ? `
+                                <div class="awarded-badge">
+                                    <i data-lucide="award" style="width: 0.75rem; height: 0.75rem;"></i>
+                                    Already awarded ${volunteer.pointsAwarded} points
+                                </div>
+                            ` : ''}
                         </div>
+                        
+                        ${!isAwarded ? `
+                            <div class="attendance-buttons">
+                                <button class="attendance-btn ${currentStatus === 'attended' ? 'selected attended' : ''}" 
+                                        onclick="setAttendance(${volunteer.id}, 'attended')"
+                                        title="Attended - Full points">
+                                    <i data-lucide="check-circle" style="width: 1.25rem; height: 1.25rem;"></i>
+                                </button>
+                                <button class="attendance-btn ${currentStatus === 'partial' ? 'selected partial' : ''}" 
+                                        onclick="setAttendance(${volunteer.id}, 'partial')"
+                                        title="Partial - Half points">
+                                    <i data-lucide="clock" style="width: 1.25rem; height: 1.25rem;"></i>
+                                </button>
+                                <button class="attendance-btn ${currentStatus === 'no_show' ? 'selected no-show' : ''}" 
+                                        onclick="setAttendance(${volunteer.id}, 'no_show')"
+                                        title="No Show - No points">
+                                    <i data-lucide="x-circle" style="width: 1.25rem; height: 1.25rem;"></i>
+                                </button>
+                            </div>
+                            <div class="points-display">
+                                <div class="label">Points</div>
+                                <div class="value ${estimatedPoints > 0 ? 'positive' : 'zero'}">+${estimatedPoints}</div>
+                            </div>
+                        ` : `
+                            <div class="status-display">
+                                ${getStatusIcon(volunteer.attendanceStatus)}
+                                <span style="text-transform: capitalize;">${volunteer.attendanceStatus}</span>
+                            </div>
+                        `}
                     </div>
-                    <div class="volunteer-actions">
-                        <button class="btn btn-outline btn-sm" onclick="viewVolunteer(${volunteer.id})">
-                            <i data-lucide="eye" style="width: 0.875rem; height: 0.875rem;"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            
             lucide.createIcons();
         }
 
-        function viewVolunteer(id) {
-            const volunteer = allVolunteers.find(v => v.id === id);
-            if (volunteer) {
-                alert(`Volunteer Details:\n\nName: ${volunteer.name}\nEmail: ${volunteer.email}\nCity: ${volunteer.city || 'N/A'}\nPhone: ${volunteer.phone || 'N/A'}\nEvents Completed: ${volunteer.eventsCompleted || 0}\nVolunteer Points: ${volunteer.volunteerPoints || 0}`);
+        // Set attendance for a volunteer
+        function setAttendance(odometrId, status) {
+            attendance[volunteerId] = status;
+            renderVolunteers();
+            updateStats();
+        }
+
+        // Mark all as a specific status
+        function markAllAs(status) {
+            if (!eventData) return;
+            
+            eventData.volunteers.forEach(v => {
+                // Only mark if not already awarded
+                if (!v.pointsAwarded || v.pointsAwarded === 0) {
+                    attendance[v.id] = status;
+                }
+            });
+            
+            renderVolunteers();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            if (!eventData) return;
+            
+            const volunteers = eventData.volunteers;
+            const notAwarded = volunteers.filter(v => !v.pointsAwarded || v.pointsAwarded === 0);
+            
+            const attendedCount = notAwarded.filter(v => attendance[v.id] === 'attended').length;
+            const partialCount = notAwarded.filter(v => attendance[v.id] === 'partial').length;
+            const noShowCount = notAwarded.filter(v => attendance[v.id] === 'no_show').length;
+            const pendingCount = notAwarded.filter(v => attendance[v.id] === 'pending').length;
+            
+            document.getElementById('totalCount').textContent = volunteers.length;
+            document.getElementById('attendedCount').textContent = attendedCount;
+            document.getElementById('partialCount').textContent = partialCount;
+            document.getElementById('noShowCount').textContent = noShowCount;
+            
+            // Show/hide pending warning
+            const pendingWarning = document.getElementById('pendingWarning');
+            if (pendingCount > 0) {
+                pendingWarning.style.display = 'flex';
+                pendingWarning.style.alignItems = 'center';
+                pendingWarning.style.gap = '0.5rem';
+                document.getElementById('pendingCount').textContent = pendingCount;
+            } else {
+                pendingWarning.style.display = 'none';
+            }
+            
+            // Enable/disable submit button
+            document.getElementById('submitBtn').disabled = pendingCount > 0 && notAwarded.length > 0;
+        }
+
+        // Get points for status
+        function getPointsForStatus(status) {
+            if (!eventData) return 0;
+            const fullPoints = eventData.pointsReward || 0;
+            
+            switch (status) {
+                case 'attended': return fullPoints;
+                case 'partial': return Math.floor(fullPoints / 2);
+                case 'no_show': return 0;
+                default: return 0;
             }
         }
 
+        // Get status icon HTML
+        function getStatusIcon(status) {
+            const icons = {
+                'attended': '<i data-lucide="check-circle" style="width: 1rem; height: 1rem; color: #10b981;"></i>',
+                'partial': '<i data-lucide="clock" style="width: 1rem; height: 1rem; color: #f59e0b;"></i>',
+                'no_show': '<i data-lucide="x-circle" style="width: 1rem; height: 1rem; color: #ef4444;"></i>',
+                'pending': '<i data-lucide="help-circle" style="width: 1rem; height: 1rem; color: #6b7280;"></i>'
+            };
+            return icons[status] || icons.pending;
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'alert-triangle'}" 
+                       style="width: 1.25rem; height: 1.25rem;"></i>
+                    ${message}
+                </div>
+            `;
+            lucide.createIcons();
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Submit attendance
+        async function submitAttendance() {
+            if (!eventData) return;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i data-lucide="loader" style="width: 1rem; height: 1rem; margin-right: 0.5rem; animation: spin 1s linear infinite;"></i> Submitting...';
+            
+            try {
+                // Prepare attendance data
+                const attendanceData = eventData.volunteers
+                    .filter(v => !v.pointsAwarded || v.pointsAwarded === 0)
+                    .filter(v => attendance[v.id] !== 'pending')
+                    .map(v => ({
+                        volunteerId: v.id,
+                        status: attendance[v.id]
+                    }));
+                
+                if (attendanceData.length === 0) {
+                    showAlert('No volunteers to mark. All volunteers already have points awarded or are pending.', 'warning');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i data-lucide="save" style="width: 1rem; height: 1rem; margin-right: 0.5rem;"></i> Submit Attendance & Award Points';
+                    lucide.createIcons();
+                    return;
+                }
+                
+                const response = await fetchOrgWithAuth(`${API_BASE_URL}/org/events/${eventId}/attendance`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ attendance: attendanceData })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showAlert(`Successfully marked ${result.volunteersMarked} volunteers. ${result.pointsDistributed} points distributed!`, 'success');
+                    
+                    // Refresh data
+                    setTimeout(() => {
+                        loadEventData();
+                    }, 1500);
+                } else {
+                    showAlert(result.error || 'Failed to submit attendance', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error submitting attendance', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i data-lucide="save" style="width: 1rem; height: 1rem; margin-right: 0.5rem;"></i> Submit Attendance & Award Points';
+                lucide.createIcons();
+            }
+        }
+
+        // Fix the typo in setAttendance function
+        function setAttendance(volunteerId, status) {
+            attendance[volunteerId] = status;
+            renderVolunteers();
+            updateStats();
+        }
+
+        // Add spin animation
+        const style = document.createElement('style');
+        style.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+
         // Initialize
-        loadVolunteers();
+        loadEventData();
     </script>
 </body>
 
