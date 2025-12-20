@@ -61,6 +61,7 @@
                 <!-- Filter -->
                 <select id="statusFilter" class="form-input" style="width: auto;" onchange="filterEvents()">
                     <option value="all">All Status</option>
+                    <option value="active">Active</option>
                     <option value="approved">Approved</option>
                     <option value="pending">Pending</option>
                     <option value="completed">Completed</option>
@@ -100,70 +101,6 @@
             return true;
         }
 
-        // Sample events data
-        const sampleEvents = [
-            {
-                id: 1,
-                title: "Park Cleanup Drive",
-                date: "2025-11-20",
-                time: "9:00 AM - 12:00 PM",
-                status: "approved",
-                volunteers: 24,
-                capacity: 30,
-                pointsReward: 150,
-                location: "Central Park",
-                description: "Help us clean up Central Park and make our community greener!"
-            },
-            {
-                id: 2,
-                title: "Community Teaching Workshop",
-                date: "2025-11-22",
-                time: "2:00 PM - 5:00 PM",
-                status: "pending",
-                volunteers: 12,
-                capacity: 15,
-                pointsReward: 200,
-                location: "Community Center",
-                description: "Share your skills by teaching local students."
-            },
-            {
-                id: 3,
-                title: "Winter Relief Supply Drive",
-                date: "2025-11-28",
-                time: "10:00 AM - 3:00 PM",
-                status: "approved",
-                volunteers: 35,
-                capacity: 40,
-                pointsReward: 175,
-                location: "Downtown Square",
-                description: "Distribute winter supplies to those in need."
-            },
-            {
-                id: 4,
-                title: "Riverside Trail Restoration",
-                date: "2025-12-05",
-                time: "8:00 AM - 2:00 PM",
-                status: "approved",
-                volunteers: 18,
-                capacity: 25,
-                pointsReward: 200,
-                location: "Riverside Park",
-                description: "Help restore and beautify our local nature trail."
-            },
-            {
-                id: 5,
-                title: "Food Bank Sorting",
-                date: "2025-10-15",
-                time: "9:00 AM - 1:00 PM",
-                status: "completed",
-                volunteers: 20,
-                capacity: 20,
-                pointsReward: 125,
-                location: "City Food Bank",
-                description: "Sort and organize food donations for distribution."
-            }
-        ];
-
         // Load events
         async function loadEvents() {
             if (!checkOrgAuth()) return;
@@ -176,16 +113,46 @@
                 avatarEl.textContent = org.name.charAt(0).toUpperCase();
             }
 
+            const container = document.getElementById('eventsList');
+            container.innerHTML = '<div style="text-align: center; padding: 2rem;"><i data-lucide="loader" class="spin"></i> Loading events...</div>';
+            lucide.createIcons();
+
             try {
                 const response = await fetchOrgWithAuth(`${API_BASE_URL}/org/events`);
+                console.log('Events API response status:', response.status);
+                
                 if (response.ok) {
                     allEvents = await response.json();
+                    console.log('Events loaded:', allEvents);
+                    
+                    if (!Array.isArray(allEvents)) {
+                        console.error('Events is not an array:', allEvents);
+                        allEvents = [];
+                    }
                 } else {
-                    allEvents = sampleEvents;
+                    const errorData = await response.text();
+                    console.error('Events API error:', errorData);
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                            <i data-lucide="alert-circle" style="width: 3rem; height: 3rem; margin-bottom: 1rem; color: #ef4444;"></i>
+                            <p>Failed to load events. Please try again.</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.5rem;">Error: ${response.status}</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return;
                 }
             } catch (error) {
-                console.log('Using sample events');
-                allEvents = sampleEvents;
+                console.error('Events fetch error:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <i data-lucide="wifi-off" style="width: 3rem; height: 3rem; margin-bottom: 1rem; color: #ef4444;"></i>
+                        <p>Error connecting to server</p>
+                        <p style="font-size: 0.75rem; margin-top: 0.5rem;">${error.message}</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
             }
 
             renderEvents(allEvents);
@@ -214,45 +181,175 @@
             }
 
             container.innerHTML = events.map(event => {
-                // Check if event is completed or past date (can mark attendance)
+                // Check if event is past or ongoing (can mark attendance & distribute points)
                 const eventDate = new Date(event.date);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                const canMarkAttendance = event.status === 'completed' || 
-                    (event.status === 'approved' && eventDate <= today);
+                const isPastOrOngoing = event.status === 'completed' || 
+                    ((event.status === 'approved' || event.status === 'active') && eventDate <= today);
+                const isFuture = eventDate > today;
+                
+                // Show volunteers button for any approved/active/completed event
+                const canViewVolunteers = event.status === 'approved' || event.status === 'active' || event.status === 'completed';
+                
+                // Default placeholder image if no event image
+                const defaultImage = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80';
+                const eventImage = event.imageUrl || defaultImage;
+                
+                console.log('Event:', event.title, 'Status:', event.status, 'Image:', event.imageUrl);
                 
                 return `
-                    <div class="org-event-item">
-                        <div class="org-event-info">
-                            <h3>${event.title}</h3>
-                            <div class="event-meta">
-                                <span><i data-lucide="calendar" style="width: 0.875rem; height: 0.875rem;"></i> ${new Date(event.date).toLocaleDateString()}</span>
-                                <span><i data-lucide="clock" style="width: 0.875rem; height: 0.875rem;"></i> ${event.time}</span>
-                                <span><i data-lucide="map-pin" style="width: 0.875rem; height: 0.875rem;"></i> ${event.location}</span>
-                                <span><i data-lucide="users" style="width: 0.875rem; height: 0.875rem;"></i> ${event.volunteers}/${event.capacity}</span>
+                    <div class="org-event-card" style="
+                        position: relative;
+                        border-radius: 1rem;
+                        overflow: hidden;
+                        margin-bottom: 1.5rem;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    ">
+                        <!-- Background Image -->
+                        <div style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background-image: url('${eventImage}');
+                            background-size: cover;
+                            background-position: center;
+                            z-index: 0;
+                        "></div>
+                        <!-- Dark Overlay for readability -->
+                        <div style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 100%);
+                            z-index: 1;
+                        "></div>
+                        
+                        <!-- Content -->
+                        <div style="
+                            position: relative;
+                            z-index: 2;
+                            padding: 1.5rem;
+                            color: white;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-start;
+                            gap: 1.5rem;
+                            flex-wrap: wrap;
+                        ">
+                            <div style="flex: 1; min-width: 280px;">
+                                <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${event.title}</h3>
+                                <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.9rem; opacity: 0.95; margin-bottom: 0.75rem;">
+                                    <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                        <i data-lucide="calendar" style="width: 1rem; height: 1rem;"></i> 
+                                        ${new Date(event.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                                    </span>
+                                    <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                        <i data-lucide="clock" style="width: 1rem; height: 1rem;"></i> 
+                                        ${event.time || 'TBD'}
+                                    </span>
+                                    <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                        <i data-lucide="map-pin" style="width: 1rem; height: 1rem;"></i> 
+                                        ${event.location || 'TBD'}
+                                    </span>
+                                    <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                        <i data-lucide="users" style="width: 1rem; height: 1rem;"></i> 
+                                        ${event.volunteersRegistered || 0}/${event.capacity || '∞'} volunteers
+                                    </span>
+                                </div>
+                                <p style="font-size: 0.875rem; opacity: 0.85; line-height: 1.5; max-width: 600px;">
+                                    ${event.description ? (event.description.length > 150 ? event.description.substring(0, 150) + '...' : event.description) : 'No description provided'}
+                                </p>
                             </div>
-                            <p class="event-description">${event.description}</p>
-                        </div>
-                        <div class="org-event-actions">
-                            <div class="org-event-reward">
-                                <div class="reward-label">Reward</div>
-                                <div class="reward-value">${event.pointsReward} VP</div>
+                            
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; min-width: 180px;">
+                                <!-- Points Badge -->
+                                <div style="
+                                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                                    padding: 0.5rem 1rem;
+                                    border-radius: 2rem;
+                                    font-weight: 700;
+                                    font-size: 1rem;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.35rem;
+                                    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+                                ">
+                                    <i data-lucide="award" style="width: 1rem; height: 1rem;"></i>
+                                    ${event.pointsReward || 0} VP
+                                </div>
+                                
+                                <!-- Status Badge -->
+                                <div class="status-badge ${event.status}" style="
+                                    padding: 0.35rem 0.75rem;
+                                    border-radius: 1rem;
+                                    font-size: 0.8rem;
+                                    font-weight: 600;
+                                    text-transform: capitalize;
+                                    background: ${getStatusColor(event.status)};
+                                    color: white;
+                                ">
+                                    ${getStatusIcon(event.status)}
+                                    ${event.status || 'Unknown'}
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+                                    ${canViewVolunteers ? `
+                                        <a href="org-volunteers.html?id=${event.id}" style="text-decoration: none;">
+                                            <button style="
+                                                width: 100%;
+                                                padding: 0.5rem 1rem;
+                                                border-radius: 0.5rem;
+                                                border: 2px solid white;
+                                                background: rgba(255,255,255,0.15);
+                                                color: white;
+                                                font-weight: 600;
+                                                font-size: 0.85rem;
+                                                cursor: pointer;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                gap: 0.35rem;
+                                                backdrop-filter: blur(4px);
+                                                transition: all 0.2s ease;
+                                            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                                                <i data-lucide="users" style="width: 0.9rem; height: 0.9rem;"></i>
+                                                View Volunteers (${event.volunteersRegistered || 0})
+                                            </button>
+                                        </a>
+                                    ` : ''}
+                                    
+                                    ${isPastOrOngoing ? `
+                                        <a href="org-volunteers.html?id=${event.id}&mode=attendance" style="text-decoration: none;">
+                                            <button style="
+                                                width: 100%;
+                                                padding: 0.5rem 1rem;
+                                                border-radius: 0.5rem;
+                                                border: none;
+                                                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                                                color: white;
+                                                font-weight: 600;
+                                                font-size: 0.85rem;
+                                                cursor: pointer;
+                                                display: flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                gap: 0.35rem;
+                                                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+                                                transition: all 0.2s ease;
+                                            " onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                                                <i data-lucide="clipboard-check" style="width: 0.9rem; height: 0.9rem;"></i>
+                                                Mark Attendance
+                                            </button>
+                                        </a>
+                                    ` : ''}
+                                </div>
                             </div>
-                            <div class="status-badge ${event.status}">
-                                ${getStatusIcon(event.status)}
-                                ${event.status.charAt(0).toUpperCase() + event.status.slice(1)}
-                            </div>
-                            ${canMarkAttendance ? `
-                                <a href="org-attendance.html?id=${event.id}">
-                                    <button class="btn btn-success btn-sm" style="background: #10b981; border-color: #10b981;">
-                                        <i data-lucide="clipboard-check" style="width: 0.875rem; height: 0.875rem; margin-right: 0.25rem;"></i>
-                                        Mark Attendance
-                                    </button>
-                                </a>
-                            ` : ''}
-                            <a href="org-event-detail.html?id=${event.id}">
-                                <button class="btn btn-outline btn-sm">View Details</button>
-                            </a>
                         </div>
                     </div>
                 `;
@@ -260,9 +357,21 @@
             lucide.createIcons();
         }
 
+        function getStatusColor(status) {
+            const colors = {
+                approved: '#10b981',
+                active: '#3b82f6',
+                pending: '#f59e0b',
+                completed: '#6366f1',
+                rejected: '#ef4444'
+            };
+            return colors[status] || '#6b7280';
+        }
+
         function getStatusIcon(status) {
             const icons = {
                 approved: '<i data-lucide="check-circle" style="width: 0.875rem; height: 0.875rem;"></i>',
+                active: '<i data-lucide="check-circle" style="width: 0.875rem; height: 0.875rem;"></i>',
                 pending: '<i data-lucide="clock" style="width: 0.875rem; height: 0.875rem;"></i>',
                 completed: '<i data-lucide="check-check" style="width: 0.875rem; height: 0.875rem;"></i>',
                 rejected: '<i data-lucide="x-circle" style="width: 0.875rem; height: 0.875rem;"></i>'

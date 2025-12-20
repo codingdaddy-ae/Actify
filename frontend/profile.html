@@ -232,11 +232,11 @@
             const defaultCauses = ['Environment', 'Education', 'Community', 'Health', 'Animals'];
 
             document.addEventListener('DOMContentLoaded', () => {
-                loadProfilePageData();
                 setupProfileShare();
                 setupProfileImageUpload();
-                loadAvatarFromAPI(); // Use API-first approach for avatar
-                loadRegisteredEventsFromAPI(); // Fetch registered events from API
+                // Load profile data and avatar together to ensure consistency
+                loadProfilePageData();
+                loadRegisteredEventsFromAPI();
                 if (window.lucide) {
                     window.lucide.createIcons();
                 }
@@ -378,36 +378,6 @@
                 }
             }
 
-            // Load avatar from API first, then localStorage fallback
-            async function loadAvatarFromAPI() {
-                const token = localStorage.getItem('token');
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                const userKey = user.email || user.id || 'guest';
-                
-                try {
-                    if (token) {
-                        const response = await fetch(`${API_BASE_URL}/users/profile`, {
-                            headers: { 'Authorization': `Bearer ${token}` }
-                        });
-                        
-                        if (response.ok) {
-                            const userData = await response.json();
-                            if (userData.profileImage) {
-                                // Save to localStorage for quick access
-                                localStorage.setItem(`profileImage_${userKey}`, userData.profileImage);
-                                displayProfileImage(userData.profileImage);
-                                return;
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error fetching profile image from API:', error);
-                }
-                
-                // Fallback to localStorage
-                loadSavedAvatar();
-            }
-
             // Load registered events from API and sync to localStorage
             async function loadRegisteredEventsFromAPI() {
                 const token = localStorage.getItem('token');
@@ -442,6 +412,9 @@
                         return;
                     }
 
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    const userKey = user.email || user.id || 'guest';
+
                     // Fetch user profile from API
                     const response = await fetch(`${API_BASE_URL}/users/profile`, {
                         headers: { 'Authorization': `Bearer ${token}` }
@@ -450,8 +423,26 @@
                     let userData;
                     if (response.ok) {
                         userData = await response.json();
+                        
+                        // Handle profile image from API
+                        if (userData.profileImage) {
+                            console.log('Profile image found in API response');
+                            // Save to localStorage for quick access on other pages
+                            localStorage.setItem(`profileImage_${userKey}`, userData.profileImage);
+                            displayProfileImage(userData.profileImage);
+                        } else {
+                            // No profile image in API, check localStorage as fallback
+                            const savedImage = localStorage.getItem(`profileImage_${userKey}`);
+                            if (savedImage) {
+                                console.log('Profile image found in localStorage');
+                                displayProfileImage(savedImage);
+                            } else {
+                                // No image anywhere - show letter avatar
+                                loadSavedAvatar();
+                            }
+                        }
                     } else {
-                        // Use localStorage as fallback
+                        // API failed - use localStorage as fallback
                         const storedUser = localStorage.getItem('user');
                         userData = storedUser ? JSON.parse(storedUser) : {
                             firstName: 'User',
@@ -462,6 +453,8 @@
                             volunteerHours: 0,
                             interests: ''
                         };
+                        // Try to load avatar from localStorage
+                        loadSavedAvatar();
                     }
 
                     // Update profile display
@@ -492,6 +485,7 @@
                     renderBadges(defaultData);
                     renderAchievements(defaultData);
                     renderCauses('');
+                    loadSavedAvatar();
                 }
             }
 
@@ -508,23 +502,8 @@
                     emailEl.textContent = data.email || '';
                 }
 
-                // Update avatar ONLY if no profile image is set (user-specific)
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                const userKey = user.email || user.id || 'guest';
-                const savedImage = localStorage.getItem(`profileImage_${userKey}`);
-                if (!savedImage) {
-                    const avatarLetter = (data.firstName || 'U').charAt(0).toUpperCase();
-                    const profileAvatarLetter = document.getElementById('profileAvatarLetter');
-                    const navAvatar = document.getElementById('navAvatar');
-                    
-                    if (profileAvatarLetter) {
-                        profileAvatarLetter.textContent = avatarLetter;
-                        profileAvatarLetter.style.display = 'flex';
-                    }
-                    if (navAvatar && !navAvatar.querySelector('img')) {
-                        navAvatar.textContent = avatarLetter;
-                    }
-                }
+                // Avatar is now handled in loadProfilePageData, so we skip it here
+                // to avoid race conditions
 
                 // Update stats
                 const points = data.volunteerPoints || 0;

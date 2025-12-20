@@ -73,7 +73,7 @@ The database comes with demo users:
 
 | Email | Password | Points | Events |
 |-------|----------|--------|--------|
-| demo@actify.com | demo123 | 3200 | 52 |
+| ctify.com | demo123 | 3200 | 52 |
 | alex.johnson@actify.com | demo123 | 1450 | 28 |
 | sarah.chen@actify.com | demo123 | 2450 | 45 |
 | emma.wilson@actify.com | demo123 | 2100 | 38 |
