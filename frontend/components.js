@@ -174,17 +174,25 @@ async function handleEventRegistration(eventId) {
 
 // Save user registration to localStorage
 function saveUserRegistration(eventId) {
-    const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userKey = user.email || user.id || 'guest';
+    const storageKey = `userRegistrations_${userKey}`;
+    
+    const registrations = JSON.parse(localStorage.getItem(storageKey) || '[]');
     if (!registrations.includes(eventId) && !registrations.includes(String(eventId))) {
         registrations.push(eventId);
-        localStorage.setItem('userRegistrations', JSON.stringify(registrations));
+        localStorage.setItem(storageKey, JSON.stringify(registrations));
     }
 }
 
 // Get user registrations from localStorage and API
 async function getUserRegistrations() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userKey = user.email || user.id || 'guest';
+    const storageKey = `userRegistrations_${userKey}`;
+    
     // Get local registrations first
-    let registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+    let registrations = JSON.parse(localStorage.getItem(storageKey) || '[]');
     
     // Try to fetch from API as well
     try {
@@ -205,7 +213,7 @@ async function getUserRegistrations() {
                     }
                 });
                 // Save merged list
-                localStorage.setItem('userRegistrations', JSON.stringify(registrations));
+                localStorage.setItem(storageKey, JSON.stringify(registrations));
             }
         }
     } catch (error) {
