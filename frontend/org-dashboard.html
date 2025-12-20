@@ -34,14 +34,12 @@
                     <i data-lucide="plus-circle"></i>
                     Create Event
                 </a>
-                <a href="org-volunteers.html" class="nav-link">
-                    <i data-lucide="users"></i>
-                    Volunteers
-                </a>
             </div>
 
             <div class="nav-org-user">
-                <div class="org-avatar" id="orgAvatar">O</div>
+                <a href="org-profile.html" style="text-decoration: none;">
+                    <div class="org-avatar" id="orgAvatar" style="cursor: pointer;" title="View Profile">O</div>
+                </a>
                 <button onclick="logoutOrganization()" class="logout-btn" title="Logout">
                     <i data-lucide="log-out"></i>
                 </button>
@@ -179,38 +177,138 @@
                 return;
             }
 
+            // Default placeholder image
+            const defaultImage = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80';
+
             container.innerHTML = events.map(event => {
                 const statusClass = event.status === 'active' ? 'approved' : event.status;
                 const statusIcon = event.status === 'active' ? 'check-circle' : (event.status === 'pending' ? 'clock' : 'x-circle');
                 const statusText = event.status === 'active' ? 'Approved' : (event.status.charAt(0).toUpperCase() + event.status.slice(1));
+                const eventImage = event.imageUrl || defaultImage;
                 
                 return `
-                <div class="org-event-item" id="event-item-${event.id}">
-                    <div class="org-event-info">
-                        <h3>${event.title}</h3>
-                        <div class="event-meta">
-                            <span>${new Date(event.date).toLocaleDateString()}</span>
-                            <span>${event.time || event.endTime || 'TBD'}</span>
-                            <span>${event.volunteersRegistered || 0} volunteers</span>
+                <div class="org-event-card" id="event-item-${event.id}" style="
+                    position: relative;
+                    border-radius: 1rem;
+                    overflow: hidden;
+                    margin-bottom: 1.5rem;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                ">
+                    <!-- Background Image -->
+                    <div style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background-image: url('${eventImage}');
+                        background-size: cover;
+                        background-position: center;
+                        z-index: 0;
+                    "></div>
+                    <!-- Dark Overlay -->
+                    <div style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 100%);
+                        z-index: 1;
+                    "></div>
+                    
+                    <!-- Content -->
+                    <div style="
+                        position: relative;
+                        z-index: 2;
+                        padding: 1.5rem;
+                        color: white;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        gap: 1.5rem;
+                        flex-wrap: wrap;
+                    ">
+                        <div style="flex: 1; min-width: 240px;">
+                            <h3 style="font-size: 1.35rem; margin-bottom: 0.75rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${event.title}</h3>
+                            <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; opacity: 0.95; margin-bottom: 0.75rem;">
+                                <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                    <i data-lucide="calendar" style="width: 0.9rem; height: 0.9rem;"></i> 
+                                    ${new Date(event.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                    <i data-lucide="clock" style="width: 0.9rem; height: 0.9rem;"></i> 
+                                    ${event.time || 'TBD'}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 0.35rem;">
+                                    <i data-lucide="users" style="width: 0.9rem; height: 0.9rem;"></i> 
+                                    ${event.volunteersRegistered || 0} volunteers
+                                </span>
+                            </div>
+                            <p style="font-size: 0.85rem; opacity: 0.85; line-height: 1.4; max-width: 500px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                ${event.description || 'No description provided'}
+                            </p>
                         </div>
-                        <p class="event-description">${event.description}</p>
-                    </div>
-                    <div class="org-event-actions">
-                        <div class="org-event-reward">
-                            <div class="reward-label">Reward</div>
-                            <div class="reward-value">${event.pointsReward} VP</div>
+                        
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; min-width: 140px;">
+                            <!-- Points Badge -->
+                            <div style="
+                                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                                padding: 0.5rem 1rem;
+                                border-radius: 2rem;
+                                font-weight: 700;
+                                font-size: 1rem;
+                                display: flex;
+                                align-items: center;
+                                gap: 0.35rem;
+                                box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+                            ">
+                                <i data-lucide="award" style="width: 1rem; height: 1rem;"></i>
+                                ${event.pointsReward || 0} VP
+                            </div>
+                            
+                            <!-- Status Badge -->
+                            <div style="
+                                padding: 0.35rem 0.75rem;
+                                border-radius: 1rem;
+                                font-size: 0.8rem;
+                                font-weight: 600;
+                                text-transform: capitalize;
+                                background: ${statusClass === 'approved' || statusClass === 'active' ? '#10b981' : statusClass === 'pending' ? '#f59e0b' : '#ef4444'};
+                                color: white;
+                                display: flex;
+                                align-items: center;
+                                gap: 0.25rem;
+                            ">
+                                <i data-lucide="${statusIcon}" style="width: 0.8rem; height: 0.8rem;"></i>
+                                ${statusText}
+                            </div>
+                            
+                            <!-- View Details Button -->
+                            <button onclick="toggleEventDetails(${event.id})" style="
+                                padding: 0.5rem 1rem;
+                                border-radius: 0.5rem;
+                                border: 2px solid white;
+                                background: rgba(255,255,255,0.15);
+                                color: white;
+                                font-weight: 600;
+                                font-size: 0.85rem;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                gap: 0.35rem;
+                                backdrop-filter: blur(4px);
+                                transition: all 0.2s ease;
+                            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">
+                                <span id="view-btn-text-${event.id}">View Details</span>
+                                <i data-lucide="chevron-down" id="view-btn-icon-${event.id}" style="width: 0.9rem; height: 0.9rem; transition: transform 0.3s;"></i>
+                            </button>
                         </div>
-                        <div class="status-badge ${statusClass}">
-                            <i data-lucide="${statusIcon}" style="width: 0.875rem; height: 0.875rem;"></i>
-                            ${statusText}
-                        </div>
-                        <button class="btn btn-outline btn-sm" onclick="toggleEventDetails(${event.id})">
-                            <span id="view-btn-text-${event.id}">View Details</span>
-                            <i data-lucide="chevron-down" id="view-btn-icon-${event.id}" style="width: 1rem; height: 1rem; margin-left: 0.25rem; transition: transform 0.3s;"></i>
-                        </button>
                     </div>
                 </div>
-                <div class="event-details-panel" id="event-details-${event.id}" style="display: none;">
+                
+                <!-- Details Panel (outside card for better visibility) -->
+                <div class="event-details-panel" id="event-details-${event.id}" style="display: none; margin-top: -1rem; margin-bottom: 1.5rem;">
                     <div class="details-loading">Loading details...</div>
                 </div>
             `}).join('');

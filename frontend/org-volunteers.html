@@ -314,7 +314,7 @@
                     <i data-lucide="layout-dashboard"></i>
                     Dashboard
                 </a>
-                <a href="org-events.html" class="nav-link">
+                <a href="org-events.html" class="nav-link active">
                     <i data-lucide="calendar"></i>
                     My Events
                 </a>
@@ -322,14 +322,12 @@
                     <i data-lucide="plus-circle"></i>
                     Create Event
                 </a>
-                <a href="org-volunteers.html" class="nav-link active">
-                    <i data-lucide="users"></i>
-                    Volunteers
-                </a>
             </div>
 
             <div class="nav-org-user">
-                <div class="org-avatar" id="orgAvatar">O</div>
+                <a href="org-profile.html" style="text-decoration: none;">
+                    <div class="org-avatar" id="orgAvatar" style="cursor: pointer;" title="View Profile">O</div>
+                </a>
                 <button onclick="logoutOrganization()" class="logout-btn" title="Logout">
                     <i data-lucide="log-out"></i>
                 </button>
@@ -507,13 +505,18 @@
                     }
                     
                     // Determine if event is past/ongoing (can mark attendance)
-                    const eventDate = eventData.eventDate ? new Date(eventData.eventDate) : null;
+                    // Parse and normalize event date to midnight for proper comparison
+                    let eventDate = null;
+                    if (eventData.eventDate) {
+                        eventDate = new Date(eventData.eventDate);
+                        eventDate.setHours(0, 0, 0, 0);
+                    }
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     // Can mark attendance if mode=attendance and event date is today or past
-                    isAttendanceMode = mode === 'attendance' && eventDate && eventDate <= today;
+                    isAttendanceMode = mode === 'attendance' && eventDate && eventDate.getTime() <= today.getTime();
                     
-                    console.log('Event date:', eventDate, 'Today:', today, 'isAttendanceMode:', isAttendanceMode, 'mode param:', mode);
+                    console.log('Event date (normalized):', eventDate, 'Today:', today, 'isAttendanceMode:', isAttendanceMode, 'mode param:', mode);
                     
                     // Update page based on mode
                     if (isAttendanceMode) {
@@ -530,7 +533,7 @@
                         document.querySelector('.info-box').style.display = 'block';
                     } else {
                         document.getElementById('pageTitle').textContent = 'Registered Volunteers';
-                        if (eventDate && eventDate > today) {
+                        if (eventDate && eventDate.getTime() > today.getTime()) {
                             document.getElementById('modeBanner').style.display = 'flex';
                             document.getElementById('modeBanner').className = 'alert alert-success';
                             document.getElementById('modeBanner').innerHTML = `
@@ -547,7 +550,7 @@
                     // Update header
                     document.getElementById('eventTitle').textContent = eventData.eventTitle || 'Event';
                     document.getElementById('eventDate').textContent = eventData.eventDate ? new Date(eventData.eventDate).toLocaleDateString() : 'N/A';
-                    document.getElementById('eventStatus').textContent = eventDate && eventDate > today ? '🟢 Upcoming' : '🔵 Past/Ongoing';
+                    document.getElementById('eventStatus').textContent = eventDate && eventDate.getTime() > today.getTime() ? '🟢 Upcoming' : '🔵 Past/Ongoing';
                     document.getElementById('eventPoints').textContent = eventData.pointsReward || 0;
                     document.getElementById('fullPoints').textContent = eventData.pointsReward || 0;
                     document.getElementById('halfPoints').textContent = Math.floor((eventData.pointsReward || 0) / 2);

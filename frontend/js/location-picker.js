@@ -171,7 +171,7 @@ function updateLocationInputs() {
     }
 }
 
-// Reverse geocode (only for convenience - coordinates are the real data)
+// Reverse geocode - ALWAYS update location field when pinpointing
 async function reverseGeocode(lat, lng) {
     try {
         const response = await fetch(
@@ -183,22 +183,25 @@ async function reverseGeocode(lat, lng) {
         if (data && data.address) {
             const address = data.address;
             
-            // Only auto-fill empty fields
+            // ALWAYS update location field when a new point is selected
             const locationInput = document.getElementById('location');
-            if (locationInput && !locationInput.value.trim()) {
+            if (locationInput) {
                 const parts = [];
                 if (address.road) parts.push(address.road);
                 if (address.suburb || address.neighbourhood) parts.push(address.suburb || address.neighbourhood);
-                locationInput.value = parts.length > 0 ? parts.join(', ') : (data.display_name || '').split(',').slice(0, 2).join(', ').trim();
+                if (address.city || address.town || address.village) parts.push(address.city || address.town || address.village);
+                locationInput.value = parts.length > 0 ? parts.join(', ') : (data.display_name || '').split(',').slice(0, 3).join(', ').trim();
             }
 
+            // ALWAYS update city field
             const cityInput = document.getElementById('city');
-            if (cityInput && !cityInput.value.trim()) {
+            if (cityInput) {
                 cityInput.value = address.city || address.town || address.village || address.county || address.state_district || '';
             }
 
+            // ALWAYS update state field
             const stateInput = document.getElementById('state');
-            if (stateInput && !stateInput.value.trim()) {
+            if (stateInput) {
                 stateInput.value = address.state || '';
             }
 
