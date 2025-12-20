@@ -64,16 +64,8 @@ public class UserController {
     @GetMapping("/leaderboard")
     public ResponseEntity<?> getLeaderboard() {
         try {
-            List<User> allUsers = userRepository.findAll();
-            
-            // Sort by volunteerPoints descending and get top 20
-            List<User> leaderboard = allUsers.stream()
-                .sorted((a, b) -> Integer.compare(
-                    b.getVolunteerPoints() != null ? b.getVolunteerPoints() : 0,
-                    a.getVolunteerPoints() != null ? a.getVolunteerPoints() : 0
-                ))
-                .limit(20)
-                .collect(Collectors.toList());
+            // Fetch only top 20 users directly from database
+            List<User> leaderboard = userRepository.findTop20ByOrderByVolunteerPointsDesc();
             
             return ResponseEntity.ok(leaderboard);
         } catch (Exception e) {

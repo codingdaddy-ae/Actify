@@ -30,7 +30,7 @@ async function loginUser(email, password) {
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('An error occurred during login. Make sure the backend is running on port 8081.');
+        alert('An error occurred during login. Please check your internet connection or try again later.');
     }
 }
 
