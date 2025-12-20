@@ -272,6 +272,13 @@ async function loadDashboardData() {
     try {
         checkAuth();
         
+        // Immediately show name from localStorage to prevent flicker
+        const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+        const userNameEl = document.getElementById('userName');
+        if (userNameEl && localUser.firstName) {
+            userNameEl.textContent = localUser.firstName;
+        }
+        
         // Fetch fresh user profile data from backend
         const profileResponse = await fetchWithAuth(`${API_BASE_URL}/users/profile`);
         if (profileResponse.ok) {
@@ -291,12 +298,12 @@ async function loadDashboardData() {
                 country: profileData.country,
                 city: profileData.city,
                 neighborhood: profileData.neighborhood,
-                interests: profileData.interests
+                interests: profileData.interests,
+                profileImage: profileData.profileImage
             };
             localStorage.setItem('user', JSON.stringify(updatedUser));
             
             // Update dynamic greeting with first name only
-            const userNameEl = document.getElementById('userName');
             if (userNameEl) {
                 userNameEl.textContent = profileData.firstName || 'User';
             }
@@ -544,11 +551,33 @@ function updateUserCoins() {
     });
 }
 
-function updateUserAvatar() {
+async function updateUserAvatar() {
     const user = getCurrentUser();
     const avatarElements = document.querySelectorAll('.user-avatar');
     
-    // Check for uploaded profile image first (user-specific)
+    // Try to fetch profile image from API first
+    try {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const response = await fetch(`${API_BASE_URL}/users/profile`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const profileData = await response.json();
+                if (profileData.profileImage) {
+                    // Update all avatar elements with the profile image
+                    avatarElements.forEach(el => {
+                        el.innerHTML = `<img src="${profileData.profileImage}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" onerror="this.onerror=null; this.parentElement.textContent='${(user?.firstName || user?.name || 'U').charAt(0).toUpperCase()}';">`;
+                    });
+                    return;
+                }
+            }
+        }
+    } catch (error) {
+        console.log('Could not fetch profile image from API, using fallback');
+    }
+    
+    // Fallback: Check for uploaded profile image in localStorage (user-specific)
     const userKey = user ? (user.email || user.id || 'guest') : 'guest';
     const savedImage = localStorage.getItem(`profileImage_${userKey}`);
     

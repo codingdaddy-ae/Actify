@@ -574,12 +574,16 @@ public class OrganizationController {
                     User user = userOpt.get();
                     Map<String, Object> volunteerData = new HashMap<>();
                     volunteerData.put("id", user.getId());
+                    volunteerData.put("registrationId", reg.getId());
                     volunteerData.put("name", user.getFirstName() + " " + user.getLastName());
                     volunteerData.put("email", user.getEmail());
                     volunteerData.put("phone", user.getPhone());
                     volunteerData.put("registrationDate", reg.getRegistrationDate());
                     volunteerData.put("status", reg.getStatus());
+                    volunteerData.put("attendanceStatus", reg.getAttendanceStatus());
                     volunteerData.put("attendanceConfirmed", reg.getAttendanceConfirmed());
+                    volunteerData.put("pointsAwarded", reg.getPointsAwarded());
+                    volunteerData.put("pointsAwardedAt", reg.getPointsAwardedAt());
                     volunteersList.add(volunteerData);
                 }
             }
@@ -587,9 +591,208 @@ public class OrganizationController {
             Map<String, Object> response = new HashMap<>();
             response.put("eventId", eventId);
             response.put("eventTitle", event.getTitle());
+            response.put("eventDate", event.getDate());
+            response.put("pointsReward", event.getPointsReward());
             response.put("volunteers", volunteersList);
             response.put("totalVolunteers", volunteersList.size());
             response.put("capacity", event.getCapacity());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    // ===== Attendance & Points Distribution Endpoints =====
+    
+    @PostMapping("/events/{eventId}/attendance")
+    public ResponseEntity<?> markAttendance(
+            @PathVariable Long eventId,
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, Object> request) {
+        try {
+            Long orgId = extractOrgIdFromToken(authHeader);
+            
+            // Verify event belongs to this org
+            Optional<Event> eventOpt = eventRepository.findById(eventId);
+            if (!eventOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Event event = eventOpt.get();
+            if (!event.getOrganizerId().equals(orgId)) {
+                return ResponseEntity.status(403).body(Map.of("error", "Not authorized to manage this event"));
+            }
+            
+            // Get attendance data from request
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> attendanceList = (List<Map<String, Object>>) request.get("attendance");
+            
+            if (attendanceList == null || attendanceList.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Attendance data is required"));
+            }
+            
+            int pointsDistributed = 0;
+            int volunteersMarked = 0;
+            List<String> errors = new ArrayList<>();
+            
+            for (Map<String, Object> attendance : attendanceList) {
+                Long volunteerId = Long.valueOf(attendance.get("volunteerId").toString());
+                String status = (String) attendance.get("status"); // attended, partial, no_show
+                
+                Optional<EventRegistration> regOpt = eventRegistrationRepository.findByUserIdAndEventId(volunteerId, eventId);
+                
+                if (regOpt.isPresent()) {
+                    EventRegistration reg = regOpt.get();
+                    
+                    // Only process if not already awarded
+                    if (reg.getPointsAwarded() == null || reg.getPointsAwarded() == 0) {
+                        reg.setAttendanceStatus(status);
+                        reg.setAttendanceConfirmed(true);
+                        reg.setAwardedByOrgId(orgId);
+                        
+                        // Calculate points based on status
+                        int points = 0;
+                        if ("attended".equals(status)) {
+                            points = event.getPointsReward();
+                        } else if ("partial".equals(status)) {
+                            points = event.getPointsReward() / 2; // Half points for partial attendance
+                        }
+                        // no_show gets 0 points
+                        
+                        if (points > 0) {
+                            reg.setPointsAwarded(points);
+                            reg.setPointsAwardedAt(LocalDateTime.now());
+                            
+                            // Update user's volunteer points
+                            Optional<User> userOpt = userRepository.findById(volunteerId);
+                            if (userOpt.isPresent()) {
+                                User user = userOpt.get();
+                                user.setVolunteerPoints(user.getVolunteerPoints() + points);
+                                if ("attended".equals(status)) {
+                                    user.setEventsCompleted(user.getEventsCompleted() + 1);
+                                    // Add hours (use event duration or default 3 hours)
+                                    int hours = event.getDuration() != null ? event.getDuration() : 3;
+                                    user.setVolunteerHours(user.getVolunteerHours() + hours);
+                                }
+                                userRepository.save(user);
+                            }
+                            
+                            pointsDistributed += points;
+                        }
+                        
+                        eventRegistrationRepository.save(reg);
+                        volunteersMarked++;
+                    } else {
+                        errors.add("Volunteer ID " + volunteerId + " already has points awarded");
+                    }
+                } else {
+                    errors.add("Registration not found for volunteer ID " + volunteerId);
+                }
+            }
+            
+            // Update event status to completed if all volunteers are marked
+            List<EventRegistration> allRegs = eventRegistrationRepository.findByEventId(eventId);
+            boolean allMarked = allRegs.stream().allMatch(r -> r.getAttendanceConfirmed());
+            if (allMarked && !allRegs.isEmpty()) {
+                event.setStatus("completed");
+                eventRepository.save(event);
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Attendance marked successfully");
+            response.put("volunteersMarked", volunteersMarked);
+            response.put("pointsDistributed", pointsDistributed);
+            response.put("eventCompleted", allMarked);
+            if (!errors.isEmpty()) {
+                response.put("warnings", errors);
+            }
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    @GetMapping("/events/{eventId}/attendance")
+    public ResponseEntity<?> getAttendanceStatus(
+            @PathVariable Long eventId,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            Long orgId = extractOrgIdFromToken(authHeader);
+            
+            // Verify event belongs to this org
+            Optional<Event> eventOpt = eventRepository.findById(eventId);
+            if (!eventOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Event event = eventOpt.get();
+            if (!event.getOrganizerId().equals(orgId)) {
+                return ResponseEntity.status(403).body(Map.of("error", "Not authorized to view this event"));
+            }
+            
+            List<EventRegistration> registrations = eventRegistrationRepository.findByEventId(eventId);
+            
+            int totalRegistered = registrations.size();
+            int attended = (int) registrations.stream().filter(r -> "attended".equals(r.getAttendanceStatus())).count();
+            int partial = (int) registrations.stream().filter(r -> "partial".equals(r.getAttendanceStatus())).count();
+            int noShow = (int) registrations.stream().filter(r -> "no_show".equals(r.getAttendanceStatus())).count();
+            int pending = (int) registrations.stream().filter(r -> "pending".equals(r.getAttendanceStatus())).count();
+            int totalPointsDistributed = registrations.stream().mapToInt(r -> r.getPointsAwarded() != null ? r.getPointsAwarded() : 0).sum();
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("eventId", eventId);
+            response.put("eventTitle", event.getTitle());
+            response.put("eventDate", event.getDate());
+            response.put("totalRegistered", totalRegistered);
+            response.put("attended", attended);
+            response.put("partial", partial);
+            response.put("noShow", noShow);
+            response.put("pending", pending);
+            response.put("totalPointsDistributed", totalPointsDistributed);
+            response.put("attendanceComplete", pending == 0);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    @GetMapping("/points-history")
+    public ResponseEntity<?> getPointsDistributionHistory(@RequestHeader("Authorization") String authHeader) {
+        try {
+            Long orgId = extractOrgIdFromToken(authHeader);
+            
+            // Get all point distributions made by this org
+            List<EventRegistration> distributions = eventRegistrationRepository.findPointDistributionsByOrg(orgId);
+            List<Map<String, Object>> historyList = new ArrayList<>();
+            
+            for (EventRegistration reg : distributions) {
+                Optional<User> userOpt = userRepository.findById(reg.getUserId());
+                Optional<Event> eventOpt = eventRepository.findById(reg.getEventId());
+                
+                if (userOpt.isPresent() && eventOpt.isPresent()) {
+                    User user = userOpt.get();
+                    Event event = eventOpt.get();
+                    
+                    Map<String, Object> historyItem = new HashMap<>();
+                    historyItem.put("registrationId", reg.getId());
+                    historyItem.put("volunteerId", user.getId());
+                    historyItem.put("volunteerName", user.getFirstName() + " " + user.getLastName());
+                    historyItem.put("volunteerEmail", user.getEmail());
+                    historyItem.put("eventId", event.getId());
+                    historyItem.put("eventTitle", event.getTitle());
+                    historyItem.put("eventDate", event.getDate());
+                    historyItem.put("attendanceStatus", reg.getAttendanceStatus());
+                    historyItem.put("pointsAwarded", reg.getPointsAwarded());
+                    historyItem.put("pointsAwardedAt", reg.getPointsAwardedAt());
+                    historyItem.put("adminReviewed", reg.getAdminReviewed());
+                    historyList.add(historyItem);
+                }
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("distributions", historyList);
+            response.put("totalDistributions", historyList.size());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

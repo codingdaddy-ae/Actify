@@ -421,6 +421,12 @@
     color: var(--primary);
 }
 
+/* Profile image in volunteer avatar */
+img.volunteer-avatar {
+    object-fit: cover;
+    background: white;
+}
+
 .volunteer-info h4 {
     font-weight: 600;
     margin-bottom: 0.25rem;

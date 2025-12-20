@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://actify-production-a545.up.railway.app/"><img src="https://img.shields.io/badge/🚀%20Live%20Access-Click%20Here-success?style=for-the-badge" alt="Live Demo"/></a>
+  <a href="https://actify-production-a545.up.railway.app/"><img src="https://img.shields.io/badge/🚀%20Live%20Access-Click%20Here-success?style=for-the-badge" alt="Live Access"/></a>
 </p>
 
 ---

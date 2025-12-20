@@ -25,6 +25,28 @@ public class EventRegistration {
     @Column(name = "attendance_confirmed")
     private Boolean attendanceConfirmed = false;
     
+    // New fields for point distribution system
+    @Column(name = "attendance_status")
+    private String attendanceStatus = "pending"; // pending, attended, partial, no_show
+    
+    @Column(name = "points_awarded")
+    private Integer pointsAwarded = 0;
+    
+    @Column(name = "points_awarded_at")
+    private LocalDateTime pointsAwardedAt;
+    
+    @Column(name = "awarded_by_org_id")
+    private Long awardedByOrgId;
+    
+    @Column(name = "admin_reviewed")
+    private Boolean adminReviewed = false;
+    
+    @Column(name = "admin_reviewed_at")
+    private LocalDateTime adminReviewedAt;
+    
+    @Column(name = "admin_notes")
+    private String adminNotes;
+    
     @Column(columnDefinition = "TEXT")
     private String feedback;
     
@@ -39,6 +61,15 @@ public class EventRegistration {
     
     @Transient
     private String eventTitle;
+    
+    @Transient
+    private String eventDate;
+    
+    @Transient
+    private Integer eventPoints;
+    
+    @Transient
+    private String organizerName;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -59,6 +90,27 @@ public class EventRegistration {
     public Boolean getAttendanceConfirmed() { return attendanceConfirmed; }
     public void setAttendanceConfirmed(Boolean attendanceConfirmed) { this.attendanceConfirmed = attendanceConfirmed; }
     
+    public String getAttendanceStatus() { return attendanceStatus; }
+    public void setAttendanceStatus(String attendanceStatus) { this.attendanceStatus = attendanceStatus; }
+    
+    public Integer getPointsAwarded() { return pointsAwarded; }
+    public void setPointsAwarded(Integer pointsAwarded) { this.pointsAwarded = pointsAwarded; }
+    
+    public LocalDateTime getPointsAwardedAt() { return pointsAwardedAt; }
+    public void setPointsAwardedAt(LocalDateTime pointsAwardedAt) { this.pointsAwardedAt = pointsAwardedAt; }
+    
+    public Long getAwardedByOrgId() { return awardedByOrgId; }
+    public void setAwardedByOrgId(Long awardedByOrgId) { this.awardedByOrgId = awardedByOrgId; }
+    
+    public Boolean getAdminReviewed() { return adminReviewed; }
+    public void setAdminReviewed(Boolean adminReviewed) { this.adminReviewed = adminReviewed; }
+    
+    public LocalDateTime getAdminReviewedAt() { return adminReviewedAt; }
+    public void setAdminReviewedAt(LocalDateTime adminReviewedAt) { this.adminReviewedAt = adminReviewedAt; }
+    
+    public String getAdminNotes() { return adminNotes; }
+    public void setAdminNotes(String adminNotes) { this.adminNotes = adminNotes; }
+    
     public String getFeedback() { return feedback; }
     public void setFeedback(String feedback) { this.feedback = feedback; }
     
@@ -73,4 +125,13 @@ public class EventRegistration {
     
     public String getEventTitle() { return eventTitle; }
     public void setEventTitle(String eventTitle) { this.eventTitle = eventTitle; }
+    
+    public String getEventDate() { return eventDate; }
+    public void setEventDate(String eventDate) { this.eventDate = eventDate; }
+    
+    public Integer getEventPoints() { return eventPoints; }
+    public void setEventPoints(Integer eventPoints) { this.eventPoints = eventPoints; }
+    
+    public String getOrganizerName() { return organizerName; }
+    public void setOrganizerName(String organizerName) { this.organizerName = organizerName; }
 }

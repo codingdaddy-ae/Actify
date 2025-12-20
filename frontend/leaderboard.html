@@ -136,7 +136,8 @@
                             email: user.email,
                             points: user.volunteerPoints || 0,
                             events: user.eventsCompleted || 0,
-                            hours: user.volunteerHours || 0
+                            hours: user.volunteerHours || 0,
+                            profileImage: user.profileImage || null
                         }));
                 } else {
                     // Fallback: fetch all users and sort
@@ -153,7 +154,8 @@
                                 email: user.email,
                                 points: user.volunteerPoints || 0,
                                 events: user.eventsCompleted || 0,
-                                hours: user.volunteerHours || 0
+                                hours: user.volunteerHours || 0,
+                                profileImage: user.profileImage || null
                             }));
                     }
                 }
@@ -200,7 +202,10 @@
                         </div>
                         <div class="lb-col-name">
                             <div class="user-info">
-                                <div class="user-avatar-sm" style="${user.rank <= 3 ? 'border: 2px solid var(--emerald-500);' : ''}">${user.name.charAt(0).toUpperCase()}</div>
+                                ${user.profileImage 
+                                    ? `<img src="${user.profileImage}" alt="${user.name}" class="user-avatar-sm" style="${user.rank <= 3 ? 'border: 2px solid var(--emerald-500);' : ''} object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="user-avatar-sm" style="${user.rank <= 3 ? 'border: 2px solid var(--emerald-500);' : ''} display: none;">${user.name.charAt(0).toUpperCase()}</div>`
+                                    : `<div class="user-avatar-sm" style="${user.rank <= 3 ? 'border: 2px solid var(--emerald-500);' : ''}">${user.name.charAt(0).toUpperCase()}</div>`
+                                }
                                 <span>${user.name}</span>
                                 ${(user.email === currentUserEmail || user.id === currentUserId) ? '<span class="you-badge">You</span>' : ''}
                             </div>
