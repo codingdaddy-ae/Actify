@@ -261,40 +261,73 @@
                         return;
                     }
                     
-                    // Read and display image
+                    // Read and resize image
                     const reader = new FileReader();
-                    reader.onload = async function(event) {
-                        const imageData = event.target.result;
-                        
-                        // Save to localStorage with user-specific key
-                        const user = JSON.parse(localStorage.getItem('user') || '{}');
-                        const userKey = user.email || user.id || 'guest';
-                        localStorage.setItem(`profileImage_${userKey}`, imageData);
-                        
-                        // Display image
-                        displayProfileImage(imageData);
-                        
-                        // Save to backend
-                        try {
-                            const token = localStorage.getItem('token');
-                            if (token) {
-                                const response = await fetch(`${API_BASE_URL}/users/profile/image`, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'Authorization': `Bearer ${token}`,
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({ profileImage: imageData })
-                                });
-                                if (response.ok) {
-                                    console.log('Profile image saved to backend');
-                                } else {
-                                    console.warn('Failed to save profile image to backend');
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = async function() {
+                            // Resize logic
+                            const canvas = document.createElement('canvas');
+                            const MAX_WIDTH = 300;
+                            const MAX_HEIGHT = 300;
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
                                 }
                             }
-                        } catch (error) {
-                            console.error('Error saving profile image to backend:', error);
-                        }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // Get compressed base64 string
+                            const imageData = canvas.toDataURL('image/jpeg', 0.7);
+                            
+                            // Save to localStorage with user-specific key
+                            const user = JSON.parse(localStorage.getItem('user') || '{}');
+                            const userKey = user.email || user.id || 'guest';
+                            try {
+                                localStorage.setItem(`profileImage_${userKey}`, imageData);
+                            } catch (e) {
+                                console.warn('Failed to save image to localStorage', e);
+                            }
+                            
+                            // Display image
+                            displayProfileImage(imageData);
+                            
+                            // Save to backend
+                            try {
+                                const token = localStorage.getItem('token');
+                                if (token) {
+                                    const response = await fetch(`${API_BASE_URL}/users/profile/image`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Authorization': `Bearer ${token}`,
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ profileImage: imageData })
+                                    });
+                                    if (response.ok) {
+                                        console.log('Profile image saved to backend');
+                                    } else {
+                                        console.warn('Failed to save profile image to backend');
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Error saving profile image to backend:', error);
+                            }
+                        };
+                        img.src = event.target.result;
                     };
                     reader.readAsDataURL(file);
                 });

@@ -30,7 +30,7 @@ async function loginUser(email, password) {
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('An error occurred during login. Make sure the backend is running on port 8081.');
+        alert('An error occurred during login. Please check your internet connection or try again later.');
     }
 }
 
@@ -667,13 +667,10 @@ async function loadProfileData() {
         }
     } catch (error) {
         console.error('Error loading profile:', error);
-        // Use mock data
-        updateProfileUI({
-            volunteerPoints: 3450,
-            eventsCompleted: 18,
-            hoursVolunteered: 72,
-            badges: 5
-        });
+        // API failed - redirect to login
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
     }
 }
 

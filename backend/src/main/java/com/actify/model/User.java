@@ -56,7 +56,7 @@ public class User {
     @Column(nullable = false)
     private String userType = "volunteer";
     
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String profileImage;
 
     public Long getId() { return id; }
