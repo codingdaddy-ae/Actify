@@ -265,8 +265,10 @@
                     reader.onload = function(event) {
                         const imageData = event.target.result;
                         
-                        // Save to localStorage
-                        localStorage.setItem('profileImage', imageData);
+                        // Save to localStorage with user-specific key
+                        const user = JSON.parse(localStorage.getItem('user') || '{}');
+                        const userKey = user.email || user.id || 'guest';
+                        localStorage.setItem(`profileImage_${userKey}`, imageData);
                         
                         // Display image
                         displayProfileImage(imageData);
@@ -295,15 +297,18 @@
             
             // Load saved avatar on page load
             function loadSavedAvatar() {
-                // Check for uploaded image
-                const savedImage = localStorage.getItem('profileImage');
+                // Get user-specific key
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                
+                // Check for uploaded image with user-specific key
+                const savedImage = localStorage.getItem(`profileImage_${userKey}`);
                 if (savedImage) {
                     displayProfileImage(savedImage);
                     return;
                 }
                 
                 // If no image, show first letter of name
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
                 const firstLetter = (user.firstName || 'U').charAt(0).toUpperCase();
                 const avatarLetter = document.getElementById('profileAvatarLetter');
                 const navAvatar = document.getElementById('navAvatar');
@@ -391,8 +396,10 @@
                     emailEl.textContent = data.email || '';
                 }
 
-                // Update avatar ONLY if no profile image is set
-                const savedImage = localStorage.getItem('profileImage');
+                // Update avatar ONLY if no profile image is set (user-specific)
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                const savedImage = localStorage.getItem(`profileImage_${userKey}`);
                 if (!savedImage) {
                     const avatarLetter = (data.firstName || 'U').charAt(0).toUpperCase();
                     const profileAvatarLetter = document.getElementById('profileAvatarLetter');
@@ -432,8 +439,10 @@
                 const points = data.volunteerPoints || 0;
                 const events = data.eventsCompleted || 0;
                 
-                // Check if registered for any event
-                const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+                // Check if registered for any event (user-specific)
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                const registrations = JSON.parse(localStorage.getItem(`userRegistrations_${userKey}`) || '[]');
                 if (registrations.length > 0) count++;
 
                 // Event badges
@@ -457,7 +466,11 @@
 
                 const points = data.volunteerPoints || 0;
                 const events = data.eventsCompleted || 0;
-                const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+                
+                // Get user-specific registrations
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                const registrations = JSON.parse(localStorage.getItem(`userRegistrations_${userKey}`) || '[]');
                 const hasRegistered = registrations.length > 0;
 
                 // Determine earned badges based on stats

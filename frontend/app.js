@@ -79,9 +79,24 @@ async function registerUser(formData) {
 }
 
 function logout() {
+    // Get user info before clearing
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userKey = user.email || user.id || 'guest';
+    
+    // Clear user-specific data
+    localStorage.removeItem(`userRegistrations_${userKey}`);
+    localStorage.removeItem(`profileImage_${userKey}`);
+    
+    // Clear generic auth data
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
+    localStorage.removeItem('userAvatar');
+    
+    // Also clear old non-prefixed keys (for backwards compatibility)
+    localStorage.removeItem('userRegistrations');
+    localStorage.removeItem('profileImage');
+    
     window.location.href = 'login.html';
 }
 
@@ -507,8 +522,9 @@ function updateUserAvatar() {
     const user = getCurrentUser();
     const avatarElements = document.querySelectorAll('.user-avatar');
     
-    // Check for uploaded profile image first
-    const savedImage = localStorage.getItem('profileImage');
+    // Check for uploaded profile image first (user-specific)
+    const userKey = user ? (user.email || user.id || 'guest') : 'guest';
+    const savedImage = localStorage.getItem(`profileImage_${userKey}`);
     
     avatarElements.forEach(el => {
         if (savedImage) {

@@ -298,7 +298,12 @@
 
         // Get user registrations (also defined in components.js but needed here too)
         async function getUserRegistrations() {
-            let registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+            // Get user-specific key
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userKey = user.email || user.id || 'guest';
+            const storageKey = `userRegistrations_${userKey}`;
+            
+            let registrations = JSON.parse(localStorage.getItem(storageKey) || '[]');
             
             try {
                 const token = localStorage.getItem('token');
@@ -317,7 +322,7 @@
                                 registrations.push(eventId);
                             }
                         });
-                        localStorage.setItem('userRegistrations', JSON.stringify(registrations));
+                        localStorage.setItem(storageKey, JSON.stringify(registrations));
                     }
                 }
             } catch (error) {

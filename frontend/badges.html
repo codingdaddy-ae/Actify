@@ -210,8 +210,10 @@
                     if (stored) userData = JSON.parse(stored);
                 }
 
-                // Check for registration status
-                const registrations = JSON.parse(localStorage.getItem('userRegistrations') || '[]');
+                // Check for registration status (user-specific)
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                const registrations = JSON.parse(localStorage.getItem(`userRegistrations_${userKey}`) || '[]');
                 const hasRegistered = registrations.length > 0;
 
                 renderBadgeCategory('welcomeBadges', allBadges.welcome, userData, hasRegistered);
