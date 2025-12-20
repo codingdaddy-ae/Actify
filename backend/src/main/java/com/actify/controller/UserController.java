@@ -37,6 +37,30 @@ public class UserController {
         }
     }
     
+    @PutMapping("/profile/image")
+    public ResponseEntity<?> updateProfileImage(
+            @RequestHeader("Authorization") String token,
+            @RequestBody java.util.Map<String, String> payload) {
+        try {
+            String cleanToken = token.replace("Bearer ", "");
+            Long userId = jwtTokenProvider.getUserIdFromToken(cleanToken);
+            Optional<User> userOpt = userRepository.findById(userId);
+            
+            if(!userOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            User user = userOpt.get();
+            String profileImage = payload.get("profileImage");
+            user.setProfileImage(profileImage);
+            userRepository.save(user);
+            
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating profile image: " + e.getMessage());
+        }
+    }
+    
     @GetMapping("/leaderboard")
     public ResponseEntity<?> getLeaderboard() {
         try {

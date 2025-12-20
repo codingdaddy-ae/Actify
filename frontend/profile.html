@@ -235,7 +235,8 @@
                 loadProfilePageData();
                 setupProfileShare();
                 setupProfileImageUpload();
-                loadSavedAvatar();
+                loadAvatarFromAPI(); // Use API-first approach for avatar
+                loadRegisteredEventsFromAPI(); // Fetch registered events from API
                 if (window.lucide) {
                     window.lucide.createIcons();
                 }
@@ -262,7 +263,7 @@
                     
                     // Read and display image
                     const reader = new FileReader();
-                    reader.onload = function(event) {
+                    reader.onload = async function(event) {
                         const imageData = event.target.result;
                         
                         // Save to localStorage with user-specific key
@@ -272,6 +273,28 @@
                         
                         // Display image
                         displayProfileImage(imageData);
+                        
+                        // Save to backend
+                        try {
+                            const token = localStorage.getItem('token');
+                            if (token) {
+                                const response = await fetch(`${API_BASE_URL}/users/profile/image`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Authorization': `Bearer ${token}`,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ profileImage: imageData })
+                                });
+                                if (response.ok) {
+                                    console.log('Profile image saved to backend');
+                                } else {
+                                    console.warn('Failed to save profile image to backend');
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Error saving profile image to backend:', error);
+                        }
                     };
                     reader.readAsDataURL(file);
                 });
@@ -319,6 +342,62 @@
                 }
                 if (navAvatar) {
                     navAvatar.textContent = firstLetter;
+                }
+            }
+
+            // Load avatar from API first, then localStorage fallback
+            async function loadAvatarFromAPI() {
+                const token = localStorage.getItem('token');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                
+                try {
+                    if (token) {
+                        const response = await fetch(`${API_BASE_URL}/users/profile`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        
+                        if (response.ok) {
+                            const userData = await response.json();
+                            if (userData.profileImage) {
+                                // Save to localStorage for quick access
+                                localStorage.setItem(`profileImage_${userKey}`, userData.profileImage);
+                                displayProfileImage(userData.profileImage);
+                                return;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile image from API:', error);
+                }
+                
+                // Fallback to localStorage
+                loadSavedAvatar();
+            }
+
+            // Load registered events from API and sync to localStorage
+            async function loadRegisteredEventsFromAPI() {
+                const token = localStorage.getItem('token');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const userKey = user.email || user.id || 'guest';
+                
+                try {
+                    if (token) {
+                        const response = await fetch(`${API_BASE_URL}/events/user/registered`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        
+                        if (response.ok) {
+                            const apiRegistrations = await response.json();
+                            // Convert API data to array of event IDs for badge counting
+                            const registrationIds = apiRegistrations.map(event => event.id);
+                            // Save to localStorage with user-specific key
+                            localStorage.setItem(`userRegistrations_${userKey}`, JSON.stringify(registrationIds));
+                            console.log('Synced registered events from API:', registrationIds.length);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching registered events from API:', error);
                 }
             }
 
