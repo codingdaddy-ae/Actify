@@ -181,9 +181,39 @@
             const defaultImage = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&q=80';
 
             container.innerHTML = events.map(event => {
-                const statusClass = event.status === 'active' ? 'approved' : event.status;
-                const statusIcon = event.status === 'active' ? 'check-circle' : (event.status === 'pending' ? 'clock' : 'x-circle');
-                const statusText = event.status === 'active' ? 'Approved' : (event.status.charAt(0).toUpperCase() + event.status.slice(1));
+                // Status badge logic with proper completed handling
+                const statusConfig = {
+                    active: { class: 'approved', icon: 'check-circle', text: 'Approved', color: '#10b981' },
+                    approved: { class: 'approved', icon: 'check-circle', text: 'Approved', color: '#10b981' },
+                    pending: { class: 'pending', icon: 'clock', text: 'Pending', color: '#f59e0b' },
+                    completed: { class: 'completed', icon: 'check-check', text: 'Completed', color: '#6366f1' },
+                    rejected: { class: 'rejected', icon: 'x-circle', text: 'Rejected', color: '#ef4444' }
+                };
+                const statusInfo = statusConfig[event.status] || { class: 'pending', icon: 'clock', text: event.status?.charAt(0).toUpperCase() + event.status?.slice(1) || 'Unknown', color: '#6b7280' };
+                const statusClass = statusInfo.class;
+                const statusIcon = statusInfo.icon;
+                const statusText = statusInfo.text;
+                const statusColor = statusInfo.color;
+                
+                // Calculate duration from time and endTime
+                const calculateDuration = (startTime, endTime) => {
+                    if (!startTime || !endTime) return null;
+                    try {
+                        const [startH, startM] = startTime.split(':').map(Number);
+                        const [endH, endM] = endTime.split(':').map(Number);
+                        let totalMins = (endH * 60 + endM) - (startH * 60 + startM);
+                        if (totalMins < 0) totalMins += 24 * 60; // Handle overnight events
+                        const hours = Math.floor(totalMins / 60);
+                        const mins = totalMins % 60;
+                        if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
+                        if (hours > 0) return `${hours} hr${hours > 1 ? 's' : ''}`;
+                        return `${mins} min${mins > 1 ? 's' : ''}`;
+                    } catch (e) { return null; }
+                };
+                // Show duration if calculable, otherwise show time range, start time, or Time not set
+                const durationText = calculateDuration(event.time, event.endTime);
+                const timeDisplay = durationText || (event.time && event.endTime ? `${event.time} - ${event.endTime}` : event.time || 'Time not set');
+                
                 const eventImage = event.imageUrl || defaultImage;
                 
                 return `
@@ -238,7 +268,7 @@
                                 </span>
                                 <span style="display: flex; align-items: center; gap: 0.35rem;">
                                     <i data-lucide="clock" style="width: 0.9rem; height: 0.9rem;"></i> 
-                                    ${event.time || 'TBD'}
+                                    ${timeDisplay}
                                 </span>
                                 <span style="display: flex; align-items: center; gap: 0.35rem;">
                                     <i data-lucide="users" style="width: 0.9rem; height: 0.9rem;"></i> 
@@ -274,7 +304,7 @@
                                 font-size: 0.8rem;
                                 font-weight: 600;
                                 text-transform: capitalize;
-                                background: ${statusClass === 'approved' || statusClass === 'active' ? '#10b981' : statusClass === 'pending' ? '#f59e0b' : '#ef4444'};
+                                background: ${statusColor};
                                 color: white;
                                 display: flex;
                                 align-items: center;
