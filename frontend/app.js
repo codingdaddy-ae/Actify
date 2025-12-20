@@ -86,6 +86,7 @@ function logout() {
     // Clear user-specific data
     localStorage.removeItem(`userRegistrations_${userKey}`);
     localStorage.removeItem(`profileImage_${userKey}`);
+    localStorage.removeItem(`eventAttempts_${userKey}`);
     
     // Clear generic auth data
     localStorage.removeItem('user');
@@ -466,16 +467,41 @@ async function registerForEvent(eventId) {
         const data = await response.json();
         
         if (response.ok && data.success) {
-            alert(data.message || 'Successfully registered for event!');
-            return true;
+            // Don't show alert - let components.js handle notifications
+            return { success: true, message: data.message };
         } else {
-            alert(data.message || 'Failed to register for event.');
-            return false;
+            // Return the error but don't alert
+            return { success: false, message: data.message || 'Failed to register' };
         }
     } catch (error) {
         console.error('Error registering for event:', error);
-        alert('An error occurred while registering. Please make sure you are logged in.');
-        return false;
+        return { success: false, message: 'Network error. Please try again.' };
+    }
+}
+
+// Unregister from event API
+async function unregisterFromEvent(eventId) {
+    try {
+        const response = await fetchWithAuth(`${API_BASE_URL}/events/${eventId}/unregister`, {
+            method: 'DELETE'
+        });
+
+        // Handle both JSON and non-JSON responses
+        let data = {};
+        try {
+            data = await response.json();
+        } catch (e) {
+            // Response might not be JSON
+        }
+        
+        if (response.ok) {
+            return { success: true, message: data.message || 'Unregistered successfully' };
+        } else {
+            return { success: false, message: data.message || 'Failed to unregister' };
+        }
+    } catch (error) {
+        console.error('Error unregistering from event:', error);
+        return { success: false, message: 'Network error. Please try again.' };
     }
 }
 
