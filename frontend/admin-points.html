@@ -588,9 +588,13 @@
                 });
                 
                 if (distribResponse.ok) {
-                    allDistributions = await distribResponse.json();
+                    const distribData = await distribResponse.json();
+                    // API returns { distributions: [...], total: N }
+                    allDistributions = distribData.distributions || distribData || [];
+                    console.log('Loaded distributions:', allDistributions.length);
                 } else {
-                    allDistributions = getSampleDistributions();
+                    allDistributions = [];
+                    console.warn('Failed to load distributions from API:', distribResponse.status);
                 }
                 
                 // Load organization summary
@@ -599,9 +603,13 @@
                 });
                 
                 if (orgResponse.ok) {
-                    organizations = await orgResponse.json();
+                    const orgData = await orgResponse.json();
+                    // API returns { organizations: [...] }
+                    organizations = orgData.organizations || orgData || [];
+                    console.log('Loaded organizations:', organizations.length);
                 } else {
-                    organizations = getSampleOrgSummary();
+                    organizations = [];
+                    console.warn('Failed to load organizations from API:', orgResponse.status);
                 }
                 
                 updateStats();
@@ -611,71 +619,13 @@
                 
             } catch (error) {
                 console.error('Error loading data:', error);
-                allDistributions = getSampleDistributions();
-                organizations = getSampleOrgSummary();
+                allDistributions = []; // No mock data - use empty array
+                organizations = []; // No mock data - use empty array
                 updateStats();
                 renderOrgSummary();
                 populateOrgFilter();
                 renderTable();
             }
-        }
-
-        // Sample data for demo
-        function getSampleDistributions() {
-            return [
-                {
-                    id: 1,
-                    volunteerId: 1,
-                    volunteerName: "John Doe",
-                    volunteerEmail: "john@example.com",
-                    eventId: 1,
-                    eventTitle: "Park Cleanup Drive",
-                    eventDate: "2025-01-15",
-                    organizerName: "Green Earth Foundation",
-                    attendanceStatus: "attended",
-                    pointsAwarded: 150,
-                    pointsAwardedAt: "2025-01-15T14:30:00",
-                    adminReviewed: false,
-                    adminNotes: null
-                },
-                {
-                    id: 2,
-                    volunteerId: 2,
-                    volunteerName: "Jane Smith",
-                    volunteerEmail: "jane@example.com",
-                    eventId: 1,
-                    eventTitle: "Park Cleanup Drive",
-                    eventDate: "2025-01-15",
-                    organizerName: "Green Earth Foundation",
-                    attendanceStatus: "partial",
-                    pointsAwarded: 75,
-                    pointsAwardedAt: "2025-01-15T14:30:00",
-                    adminReviewed: true,
-                    adminNotes: "Approved - valid partial attendance"
-                },
-                {
-                    id: 3,
-                    volunteerId: 3,
-                    volunteerName: "Bob Wilson",
-                    volunteerEmail: "bob@example.com",
-                    eventId: 2,
-                    eventTitle: "Food Bank Sorting",
-                    eventDate: "2025-01-10",
-                    organizerName: "City Food Bank",
-                    attendanceStatus: "attended",
-                    pointsAwarded: 125,
-                    pointsAwardedAt: "2025-01-10T15:00:00",
-                    adminReviewed: false,
-                    adminNotes: null
-                }
-            ];
-        }
-
-        function getSampleOrgSummary() {
-            return [
-                { orgId: 1, orgName: "Green Earth Foundation", totalPoints: 225, distributionCount: 2 },
-                { orgId: 2, orgName: "City Food Bank", totalPoints: 125, distributionCount: 1 }
-            ];
         }
 
         // Update statistics
@@ -703,7 +653,7 @@
             container.innerHTML = organizations.map(org => `
                 <div class="org-summary-item">
                     <span class="name">${org.orgName}</span>
-                    <span class="points">${org.totalPoints.toLocaleString()} VP</span>
+                    <span class="points">${(org.totalPointsAwarded || org.totalPoints || 0).toLocaleString()} VP</span>
                 </div>
             `).join('');
         }
@@ -746,7 +696,7 @@
             
             // Apply org filter
             if (orgFilter !== 'all') {
-                filtered = filtered.filter(d => d.awardedByOrgId == orgFilter || d.organizerName === organizations.find(o => o.orgId == orgFilter)?.orgName);
+                filtered = filtered.filter(d => d.organizationId == orgFilter || d.awardedByOrgId == orgFilter);
             }
             
             // Apply sort
