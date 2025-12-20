@@ -148,12 +148,7 @@
                     document.getElementById('pendingEvents').textContent = stats.pendingEvents || 0;
                 }
             } catch (error) {
-                console.log('Using mock data for stats');
-                // Use mock data
-                document.getElementById('totalEvents').textContent = '12';
-                document.getElementById('volunteersReached').textContent = '248';
-                document.getElementById('vpDistributed').textContent = '2,420';
-                document.getElementById('pendingEvents').textContent = '2';
+                console.error('Error loading stats:', error);
             }
 
             // Load events
@@ -164,7 +159,7 @@
                     renderOrgEvents(events);
                 }
             } catch (error) {
-                console.log('Using mock data for events');
+                console.error('Error loading events:', error);
             }
         }
 

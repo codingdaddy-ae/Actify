@@ -220,22 +220,7 @@
                 }
             } catch (error) {
                 console.error('Organization login error:', error);
-                // Demo fallback
-                if (email === 'org@actify.app' && password === 'org123') {
-                    const demoOrg = {
-                        success: true,
-                        orgId: 1,
-                        name: 'Green Earth Foundation',
-                        email: 'org@actify.app',
-                        token: 'demo-org-token'
-                    };
-                    localStorage.setItem('organization', JSON.stringify(demoOrg));
-                    localStorage.setItem('orgToken', 'demo-org-token');
-                    localStorage.setItem('orgId', '1');
-                    window.location.href = 'org-dashboard.html';
-                } else {
-                    showError('email', 'Unable to connect. Make sure the backend is running.');
-                }
+                showError('email', 'Unable to connect. Make sure the backend is running.');
             }
         }
     </script>

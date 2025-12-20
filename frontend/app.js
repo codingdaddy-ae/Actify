@@ -667,13 +667,10 @@ async function loadProfileData() {
         }
     } catch (error) {
         console.error('Error loading profile:', error);
-        // Use mock data
-        updateProfileUI({
-            volunteerPoints: 3450,
-            eventsCompleted: 18,
-            hoursVolunteered: 72,
-            badges: 5
-        });
+        // API failed - redirect to login
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
     }
 }
 
