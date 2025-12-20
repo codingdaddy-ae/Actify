@@ -21,7 +21,41 @@
 
 ---
 
-## 🚀 Features
+> 💡 **Recommended Browser:** For the best experience, especially with **location capture and map features**, we recommend using **Microsoft Edge**. Edge provides superior geolocation accuracy and smoother map interactions.
+
+## � How It Works
+
+<p align="center">
+  <img src="https://img.icons8.com/color/48/000000/info.png" width="40"/>
+</p>
+
+Actify is a **gamified volunteer management platform** designed to connect volunteers with meaningful opportunities while making the experience engaging and rewarding. Here's how the platform works:
+
+### 🎮 For Volunteers
+
+1. **Register & Create Profile** - Sign up with your details and set up your volunteer profile with interests and location
+2. **Discover Events** - Browse volunteer opportunities on an interactive map or grid view, filtered by cause and location
+3. **Register for Events** - Join events that match your interests (with 3 change opportunities if you need to adjust)
+4. **Earn Points & Badges** - Complete events to earn volunteer points, unlock achievement badges, and climb the leaderboard
+5. **Redeem Rewards** - Use your earned points in the rewards store for meaningful recognition
+
+### 🏢 For Organizations
+
+1. **Create Organization Account** - Register your nonprofit or community organization
+2. **Post Events** - Create volunteer opportunities with details like location, time, duration, and volunteer requirements
+3. **Manage Volunteers** - Track registrations and volunteer participation for your events
+4. **Build Community** - Connect with passionate volunteers ready to make an impact
+
+### ⚙️ Behind the Scenes
+
+- **Real-time Location Tracking** - Uses browser geolocation to show nearby events on interactive Leaflet maps
+- **JWT Authentication** - Secure login system with role-based access for volunteers, organizations, and admins
+- **Gamification Engine** - Dynamic points calculation, badge unlocking system, and live leaderboard updates
+- **Responsive Design** - Seamlessly works across desktop, tablet, and mobile devices
+
+---
+
+## �🚀 Features
 
 - 🎯 **Event Management**: Browse and register for volunteer opportunities with interactive maps
 - 🏆 **Gamified Points System**: Earn points for participation and track your volunteer impact
@@ -50,9 +84,7 @@ Actify/
 │   ├── *.html                      # Application pages
 │   ├── css/                        # Stylesheets
 │   └── *.js                        # JavaScript logic
-└── nextjs-version/    # Modern React interface
-    ├── app/                        # Application pages
-    └── components/                 # UI components
+└── README.md          # Project documentation
 ```
 
 ---
