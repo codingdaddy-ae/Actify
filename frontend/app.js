@@ -554,6 +554,7 @@ function updateUserCoins() {
 async function updateUserAvatar() {
     const user = getCurrentUser();
     const avatarElements = document.querySelectorAll('.user-avatar');
+    const userKey = user ? (user.email || user.id || 'guest') : 'guest';
     
     // Try to fetch profile image from API first
     try {
@@ -565,6 +566,8 @@ async function updateUserAvatar() {
             if (response.ok) {
                 const profileData = await response.json();
                 if (profileData.profileImage) {
+                    // Sync to localStorage for quick access
+                    localStorage.setItem(`profileImage_${userKey}`, profileData.profileImage);
                     // Update all avatar elements with the profile image
                     avatarElements.forEach(el => {
                         el.innerHTML = `<img src="${profileData.profileImage}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;" onerror="this.onerror=null; this.parentElement.textContent='${(user?.firstName || user?.name || 'U').charAt(0).toUpperCase()}';">`;
@@ -578,7 +581,6 @@ async function updateUserAvatar() {
     }
     
     // Fallback: Check for uploaded profile image in localStorage (user-specific)
-    const userKey = user ? (user.email || user.id || 'guest') : 'guest';
     const savedImage = localStorage.getItem(`profileImage_${userKey}`);
     
     avatarElements.forEach(el => {

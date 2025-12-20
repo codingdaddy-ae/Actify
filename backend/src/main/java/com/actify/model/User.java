@@ -55,6 +55,9 @@ public class User {
     
     @Column(nullable = false)
     private String userType = "volunteer";
+    
+    @Column(columnDefinition = "LONGTEXT")
+    private String profileImage;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -86,4 +89,6 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public String getUserType() { return userType; }
     public void setUserType(String userType) { this.userType = userType; }
+    public String getProfileImage() { return profileImage; }
+    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
 }
