@@ -48,7 +48,7 @@ public class OrganizationController {
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody Map<String, Object> request) {
         try {
-            String email = (String) request.get("email");
+            String email = ((String) request.get("email")).trim().toLowerCase();
             
             // Check if email already exists
             if (organizationRepository.existsByEmail(email)) {
@@ -93,7 +93,7 @@ public class OrganizationController {
     
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
+        String email = request.get("email").trim().toLowerCase();
         String password = request.get("password");
         
         Optional<Organization> orgOpt = organizationRepository.findByEmail(email);

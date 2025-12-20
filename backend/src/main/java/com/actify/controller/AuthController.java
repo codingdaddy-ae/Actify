@@ -40,7 +40,7 @@ public class AuthController {
                 user.setLastName("User");
             }
             
-            user.setEmail((String) request.get("email"));
+            user.setEmail(((String) request.get("email")).trim().toLowerCase());
             user.setPassword(passwordEncoder.encode((String) request.get("password")));
             
             // Set userType from request or default to volunteer
@@ -75,7 +75,7 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
+        String email = request.get("email").trim().toLowerCase();
         String password = request.get("password");
         
         Optional<User> userOpt = userRepository.findByEmail(email);
