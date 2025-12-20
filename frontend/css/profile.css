@@ -219,6 +219,8 @@
     margin: 0 auto 1.5rem;
     font-size: 3rem;
     font-weight: bold;
+    overflow: hidden;
+    position: relative;
 }
 
 .profile-welcome {

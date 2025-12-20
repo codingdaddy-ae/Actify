@@ -347,13 +347,17 @@
 
         <!-- Header -->
         <div class="attendance-header">
-            <h1>Mark Attendance</h1>
+            <h1 id="pageTitle">Event Volunteers</h1>
             <div class="event-info">
                 <span id="eventTitle">Loading...</span> • 
                 <span id="eventDate"></span> • 
+                <span id="eventStatus"></span> •
                 Points per volunteer: <strong id="eventPoints">0</strong>
             </div>
         </div>
+
+        <!-- Mode Banner -->
+        <div id="modeBanner" class="alert" style="display: none;"></div>
 
         <!-- Alerts -->
         <div id="alertContainer"></div>
@@ -448,12 +452,14 @@
     <script>
         lucide.createIcons();
 
-        // Get event ID from URL
+        // Get event ID and mode from URL
         const urlParams = new URLSearchParams(window.location.search);
         const eventId = urlParams.get('id');
+        const mode = urlParams.get('mode'); // 'attendance' for marking attendance, null for viewing
 
         let eventData = null;
         let attendance = {}; // { odometrId: 'attended' | 'partial' | 'no_show' | 'pending' }
+        let isAttendanceMode = false; // Whether we can mark attendance (event is past/ongoing)
 
         // Check organization authentication
         function checkOrgAuth() {
@@ -480,15 +486,68 @@
                 return;
             }
 
+            const container = document.getElementById('volunteersList');
+            container.innerHTML = '<div style="text-align: center; padding: 2rem;"><i data-lucide="loader" class="spin"></i> Loading volunteers...</div>';
+            lucide.createIcons();
+
             try {
+                console.log('Fetching volunteers for event:', eventId);
                 const response = await fetchOrgWithAuth(`${API_BASE_URL}/org/events/${eventId}/volunteers`);
+                console.log('Volunteers API response status:', response.status);
                 
                 if (response.ok) {
                     eventData = await response.json();
+                    console.log('Event data loaded:', eventData);
+                    console.log('Volunteers:', eventData.volunteers);
+                    
+                    // Ensure volunteers is an array
+                    if (!eventData.volunteers || !Array.isArray(eventData.volunteers)) {
+                        console.warn('No volunteers array in response, defaulting to empty array');
+                        eventData.volunteers = [];
+                    }
+                    
+                    // Determine if event is past/ongoing (can mark attendance)
+                    const eventDate = eventData.eventDate ? new Date(eventData.eventDate) : null;
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    // Can mark attendance if mode=attendance and event date is today or past
+                    isAttendanceMode = mode === 'attendance' && eventDate && eventDate <= today;
+                    
+                    console.log('Event date:', eventDate, 'Today:', today, 'isAttendanceMode:', isAttendanceMode, 'mode param:', mode);
+                    
+                    // Update page based on mode
+                    if (isAttendanceMode) {
+                        document.getElementById('pageTitle').textContent = 'Mark Attendance & Distribute Points';
+                        document.getElementById('modeBanner').style.display = 'flex';
+                        document.getElementById('modeBanner').className = 'alert alert-warning';
+                        document.getElementById('modeBanner').innerHTML = `
+                            <i data-lucide="alert-triangle" style="width: 1.25rem; height: 1.25rem;"></i>
+                            <span>This event has occurred. Mark attendance below to distribute volunteer points.</span>
+                        `;
+                        // Show attendance controls
+                        document.querySelector('.quick-actions').style.display = 'flex';
+                        document.querySelector('.submit-section').style.display = 'flex';
+                        document.querySelector('.info-box').style.display = 'block';
+                    } else {
+                        document.getElementById('pageTitle').textContent = 'Registered Volunteers';
+                        if (eventDate && eventDate > today) {
+                            document.getElementById('modeBanner').style.display = 'flex';
+                            document.getElementById('modeBanner').className = 'alert alert-success';
+                            document.getElementById('modeBanner').innerHTML = `
+                                <i data-lucide="calendar" style="width: 1.25rem; height: 1.25rem;"></i>
+                                <span>This event is scheduled for the future. You can view registered volunteers but cannot mark attendance until the event date.</span>
+                            `;
+                        }
+                        // Hide attendance controls for future events
+                        document.querySelector('.quick-actions').style.display = 'none';
+                        document.querySelector('.submit-section').style.display = 'none';
+                        document.querySelector('.info-box').style.display = 'none';
+                    }
                     
                     // Update header
-                    document.getElementById('eventTitle').textContent = eventData.eventTitle;
+                    document.getElementById('eventTitle').textContent = eventData.eventTitle || 'Event';
                     document.getElementById('eventDate').textContent = eventData.eventDate ? new Date(eventData.eventDate).toLocaleDateString() : 'N/A';
+                    document.getElementById('eventStatus').textContent = eventDate && eventDate > today ? '🟢 Upcoming' : '🔵 Past/Ongoing';
                     document.getElementById('eventPoints').textContent = eventData.pointsReward || 0;
                     document.getElementById('fullPoints').textContent = eventData.pointsReward || 0;
                     document.getElementById('halfPoints').textContent = Math.floor((eventData.pointsReward || 0) / 2);
@@ -500,12 +559,15 @@
                     
                     renderVolunteers();
                     updateStats();
+                    lucide.createIcons();
                 } else {
-                    showAlert('Failed to load event data', 'error');
+                    const errorText = await response.text();
+                    console.error('Volunteers API error:', errorText);
+                    showAlert('Failed to load event data: ' + response.status, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showAlert('Error connecting to server', 'error');
+                showAlert('Error connecting to server: ' + error.message, 'error');
             }
         }
 
@@ -532,6 +594,36 @@
                 const currentStatus = attendance[volunteer.id] || 'pending';
                 const estimatedPoints = getPointsForStatus(currentStatus);
                 
+                // In view-only mode (not attendance mode), just show volunteer info
+                if (!isAttendanceMode) {
+                    return `
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="name">${volunteer.name}</div>
+                                <div class="email">${volunteer.email}</div>
+                                ${isAwarded ? `
+                                    <div class="awarded-badge">
+                                        <i data-lucide="award" style="width: 0.75rem; height: 0.75rem;"></i>
+                                        Awarded ${volunteer.pointsAwarded} points
+                                    </div>
+                                ` : `
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                        <i data-lucide="calendar-check" style="width: 0.75rem; height: 0.75rem; display: inline;"></i>
+                                        Registered
+                                    </div>
+                                `}
+                            </div>
+                            ${isAwarded ? `
+                                <div class="status-display">
+                                    ${getStatusIcon(volunteer.attendanceStatus)}
+                                    <span style="text-transform: capitalize;">${volunteer.attendanceStatus || 'pending'}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                
+                // Attendance mode - show full controls
                 return `
                     <div class="volunteer-item ${isAwarded ? 'awarded' : ''}">
                         <div class="volunteer-info">
@@ -581,7 +673,7 @@
         }
 
         // Set attendance for a volunteer
-        function setAttendance(odometrId, status) {
+        function setAttendance(volunteerId, status) {
             attendance[volunteerId] = status;
             renderVolunteers();
             updateStats();
@@ -619,19 +711,21 @@
             document.getElementById('partialCount').textContent = partialCount;
             document.getElementById('noShowCount').textContent = noShowCount;
             
-            // Show/hide pending warning
-            const pendingWarning = document.getElementById('pendingWarning');
-            if (pendingCount > 0) {
-                pendingWarning.style.display = 'flex';
-                pendingWarning.style.alignItems = 'center';
-                pendingWarning.style.gap = '0.5rem';
-                document.getElementById('pendingCount').textContent = pendingCount;
-            } else {
-                pendingWarning.style.display = 'none';
+            // Only show pending warning and manage submit button in attendance mode
+            if (isAttendanceMode) {
+                const pendingWarning = document.getElementById('pendingWarning');
+                if (pendingCount > 0) {
+                    pendingWarning.style.display = 'flex';
+                    pendingWarning.style.alignItems = 'center';
+                    pendingWarning.style.gap = '0.5rem';
+                    document.getElementById('pendingCount').textContent = pendingCount;
+                } else {
+                    pendingWarning.style.display = 'none';
+                }
+                
+                // Enable/disable submit button
+                document.getElementById('submitBtn').disabled = pendingCount > 0 && notAwarded.length > 0;
             }
-            
-            // Enable/disable submit button
-            document.getElementById('submitBtn').disabled = pendingCount > 0 && notAwarded.length > 0;
         }
 
         // Get points for status
